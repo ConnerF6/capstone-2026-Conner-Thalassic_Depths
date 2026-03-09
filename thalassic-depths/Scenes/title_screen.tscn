@@ -11,20 +11,25 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_klylv")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="BackPanel" type="Panel" parent="."]
 layout_mode = 0
 offset_left = -15.0
 offset_top = -11.0
 offset_right = 1165.0
 offset_bottom = 661.0
 
-[node name="UsernameInputLable" type="RichTextLabel" parent="."]
+[node name="UsernameMenu" type="Control" parent="."]
 visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="UsernameInputLabel" type="RichTextLabel" parent="UsernameMenu"]
 layout_mode = 0
 offset_left = 263.5
 offset_top = 180.0
 offset_right = 888.5
-offset_bottom = 260.0
+offset_bottom = 276.0
 theme_override_font_sizes/bold_italics_font_size = 1
 theme_override_font_sizes/italics_font_size = 1
 theme_override_font_sizes/normal_font_size = 70
@@ -32,16 +37,14 @@ text = "ENTER USERNAME"
 fit_content = true
 horizontal_alignment = 1
 
-[node name="UsernameInput" type="TextEdit" parent="."]
-visible = false
+[node name="UsernameInput" type="TextEdit" parent="UsernameMenu"]
 layout_mode = 0
 offset_left = 276.0
 offset_top = 392.0
 offset_right = 876.0
 offset_bottom = 462.0
 
-[node name="UsernameConfirm" type="Button" parent="."]
-visible = false
+[node name="UsernameConfirm" type="Button" parent="UsernameMenu"]
 layout_mode = 0
 offset_left = 457.0
 offset_top = 530.0
@@ -50,8 +53,22 @@ offset_bottom = 607.0
 theme_override_font_sizes/font_size = 50
 text = "CONFIRM"
 
-[node name="HostBtn" type="Button" parent="."]
+[node name="ConnectionMenu" type="Control" parent="."]
 visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Label" parent="ConnectionMenu"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 30.0
+offset_right = 679.0
+offset_bottom = 140.0
+theme_override_font_sizes/font_size = 80
+text = "Thalassic Depths"
+
+[node name="HostBtn" type="Button" parent="ConnectionMenu"]
 layout_mode = 0
 offset_left = 31.0
 offset_top = 357.0
@@ -60,8 +77,7 @@ offset_bottom = 434.0
 theme_override_font_sizes/font_size = 50
 text = "Host Server"
 
-[node name="JoinBtn" type="Button" parent="."]
-visible = false
+[node name="JoinBtn" type="Button" parent="ConnectionMenu"]
 layout_mode = 0
 offset_left = 31.0
 offset_top = 452.0
@@ -70,4 +86,120 @@ offset_bottom = 529.0
 theme_override_font_sizes/font_size = 50
 text = "Join Server"
 
-[connection signal="pressed" from="UsernameConfirm" to="." method="_on_confirm_pressed"]
+[node name="HostMenu" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StatusLabel" type="Label" parent="HostMenu"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 500.0
+offset_right = 390.0
+offset_bottom = 549.0
+theme_override_font_sizes/font_size = 35
+text = "Waiting for player 2..."
+
+[node name="RoomCodeLabel" type="Label" parent="HostMenu"]
+layout_mode = 0
+offset_left = 141.0
+offset_top = 201.0
+offset_right = 1067.0
+offset_bottom = 304.0
+theme_override_font_sizes/font_size = 75
+text = "CODE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackBtn" type="Button" parent="HostMenu"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 580.0
+offset_right = 108.0
+offset_bottom = 630.0
+theme_override_font_sizes/font_size = 30
+text = " BACK "
+
+[node name="JoinMenu" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CodeInput" type="LineEdit" parent="JoinMenu"]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 156.0
+offset_right = 831.0
+offset_bottom = 247.0
+theme_override_font_sizes/font_size = 60
+placeholder_text = "Enter 6-digit code"
+
+[node name="ConnectBtn" type="Button" parent="JoinMenu"]
+layout_mode = 0
+offset_left = 457.0
+offset_top = 323.0
+offset_right = 645.0
+offset_bottom = 386.0
+theme_override_font_sizes/font_size = 40
+text = " Connect "
+
+[node name="StatusLabel" type="Label" parent="JoinMenu"]
+layout_mode = 0
+offset_left = 246.0
+offset_top = 428.0
+offset_right = 893.0
+offset_bottom = 483.0
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackBtn" type="Button" parent="JoinMenu"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 580.0
+offset_right = 133.0
+offset_bottom = 630.0
+theme_override_font_sizes/font_size = 30
+text = " BACK "
+
+[node name="MainMenu" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="HostNameLabel" type="Label" parent="MainMenu"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 10.0
+offset_right = 202.0
+offset_bottom = 52.0
+theme_override_font_sizes/font_size = 30
+text = "Placeholder"
+
+[node name="ClientNameLabel" type="Label" parent="MainMenu"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 45.0
+offset_right = 174.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 25
+text = "Placeholder"
+
+[node name="StartBtn" type="Button" parent="MainMenu"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 284.0
+offset_right = 174.0
+offset_bottom = 334.0
+theme_override_font_sizes/font_size = 30
+text = "START"
+
+[connection signal="pressed" from="UsernameMenu/UsernameConfirm" to="." method="_on_confirm_pressed"]
+[connection signal="pressed" from="ConnectionMenu/HostBtn" to="." method="_on_host_btn_pressed"]
+[connection signal="pressed" from="ConnectionMenu/JoinBtn" to="." method="_on_join_btn_pressed"]
+[connection signal="pressed" from="HostMenu/BackBtn" to="." method="_on_host_back_pressed"]
+[connection signal="pressed" from="JoinMenu/ConnectBtn" to="." method="_on_connect_btn_pressed"]
+[connection signal="pressed" from="JoinMenu/BackBtn" to="." method="_on_join_back_pressed"]
+[connection signal="pressed" from="MainMenu/StartBtn" to="." method="_on_start_btn_pressed"]
