@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://j5auqypksexh"]
+
+[ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Thallasic" parent="." instance=ExtResource("1_iukft")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.999966, 0, -0.00822047, 0, 1, 0, 0.00822047, 0, 0.999966, 0, 2.83276, -5.13152)
