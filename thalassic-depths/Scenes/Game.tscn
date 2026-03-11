@@ -1,10 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=3 format=3 uid="uid://j5auqypksexh"]
 
+[ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scenes/Game.gd" id="1_gl6un"]
 [ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
 
-[node name="Node3D" type="Node3D"]
+[node name="Game" type="Node3D"]
+script = ExtResource("1_gl6un")
 
 [node name="Thallasic" parent="." instance=ExtResource("1_iukft")]
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.999966, 0, -0.00822047, 0, 1, 0, 0.00822047, 0, 0.999966, 0, 2.83276, -5.13152)
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://ovs8hom5wfos")
+spawn_path = NodePath("..")
+spawn_limit = 2

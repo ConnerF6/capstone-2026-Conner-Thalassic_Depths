@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ovs8hom5wfos"]
+
+[ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_rpqav")
+
+[node name="CameraRig" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.83276, -5.13152)

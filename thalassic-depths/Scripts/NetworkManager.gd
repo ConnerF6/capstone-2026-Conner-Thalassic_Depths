@@ -84,6 +84,7 @@ func start_game():
 
 @rpc("authority", "call_local", "reliable")
 func _load_game():
+	cleanup_network_discovery()
 	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
 func _process(delta):
@@ -131,3 +132,11 @@ func _generate_code() -> String:
 	for i in 6:
 		code += CHARS[randi() % CHARS.length()]
 	return code
+
+func cleanup_network_discovery():
+	if udp_server and udp_server.is_bound():
+		udp_server.close()
+	if udp_listener and udp_listener.is_bound():
+		udp_listener.close()
+	is_searching = false
+	broadcast_timer = 0.0
