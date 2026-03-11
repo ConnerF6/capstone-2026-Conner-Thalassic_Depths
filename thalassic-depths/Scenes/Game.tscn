@@ -1,7 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=4 format=3 uid="uid://j5auqypksexh"]
 
 [ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scenes/Game.gd" id="1_gl6un"]
 [ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
+
+[sub_resource type="Environment" id="Environment_gl6un"]
+background_mode = 1
+background_color = Color(0, 0, 0.0627451, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0, 0, 0.0627451, 1)
+ambient_light_energy = 0.02
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0, 0, 0.0392157, 1)
+fog_density = 0.08
+fog_depth_begin = 5.0
+fog_depth_end = 30.0
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_gl6un")
@@ -12,3 +25,137 @@ script = ExtResource("1_gl6un")
 _spawnable_scenes = PackedStringArray("uid://ovs8hom5wfos")
 spawn_path = NodePath("..")
 spawn_limit = 2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gl6un")
+
+[node name="Player1Office" type="Node3D" parent="."]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -5.09657)
+light_energy = 20.0
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D7" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D8" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D9" type="OmniLight3D" parent="Player1Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="Player2Office" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.134853, 0, 47.3015)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -5.09657)
+light_energy = 20.0
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -1.54421)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D7" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D8" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D9" type="OmniLight3D" parent="Player2Office"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -8.5399)
+light_energy = 0.1
+light_specular = 0.1
+omni_range = 8.0
+omni_attenuation = 2.0

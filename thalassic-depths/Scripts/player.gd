@@ -13,7 +13,7 @@ const CAM_ANGLES = {
 }
 
 # --- Settings ---
-const EDGE_THRESHOLD = 0.15
+const EDGE_THRESHOLD = 0.1
 const HOLD_TIME = 0
 const TWEEN_DURATION = 0.3
 
@@ -22,8 +22,10 @@ var is_tweening: bool = false
 var hold_timer: float = 0.0
 var holding_left: bool = false
 var holding_right: bool = false
+var is_player_one: bool = false
 
 @onready var camera_rig: Node3D = $CameraRig
+@onready var flashlight: SpotLight3D = $CameraRig/Flashlight
 @onready var camera: Camera3D = $CameraRig/Camera3D  
 
 func _ready():
@@ -37,7 +39,9 @@ func _ready():
 	if name != str(multiplayer.get_unique_id()):
 		print("Not my player, skipping: ", name)
 		return
-
+	
+	is_player_one = (multiplayer.get_unique_id() == 1)
+	
 	print("This is my player, setting up camera: ", name)
 	$CameraRig/Camera3D.current = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
@@ -53,6 +57,8 @@ func _ready():
 		rotation_degrees.y = 180.0
 
 	camera_rig.rotation_degrees.y = CAM_ANGLES[CamState.CENTER]
+	
+	flashlight.visible = false
 
 func _process(delta):
 	_handle_camera(delta)
@@ -125,3 +131,12 @@ func _tween_to(new_state: CamState):
 	tween.set_trans(Tween.TRANS_SINE)
 	tween.tween_property(camera, "rotation_degrees:y", target_angle, TWEEN_DURATION)
 	tween.tween_callback(func(): is_tweening = false)
+
+func _input(event):
+	if not is_player_one:
+		return
+	if current_state != CamState.RIGHT:
+		return
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			flashlight.visible = event.pressed
