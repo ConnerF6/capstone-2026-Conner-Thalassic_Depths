@@ -1,8 +1,8 @@
 extends CharacterBody3D
 
 # --- Spawn Points (set these to match your office positions) ---
-const SPAWN_P1 = Vector3(0, 0, 0)
-const SPAWN_P2 = Vector3(0, 0, 36.7)
+const SPAWN_P1 = Vector3(0, 0.3, 0)
+const SPAWN_P2 = Vector3(0.2, 0.3, 37)
 
 # --- Camera States ---
 enum CamState { LEFT, CENTER, RIGHT }
