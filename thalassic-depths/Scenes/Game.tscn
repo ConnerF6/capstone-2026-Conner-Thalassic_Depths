@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=12 format=3 uid="uid://j5auqypksexh"]
 
 [ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scenes/Game.gd" id="1_gl6un"]
 [ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
 [ext_resource type="PackedScene" uid="uid://uvicjkti4jkx" path="res://Scenes/Objects/Table.glb" id="3_j5yw3"]
 [ext_resource type="PackedScene" uid="uid://6daytslol0xw" path="res://Scenes/Objects/Camera.glb" id="4_kldst"]
+[ext_resource type="Script" uid="uid://bg5oviemm882a" path="res://Scenes/door.gd" id="5_b2bpf"]
+[ext_resource type="Script" uid="uid://dqrx7tyk7g7hg" path="res://Scenes/button.gd" id="6_7lihs"]
 
 [sub_resource type="Environment" id="Environment_gl6un"]
 background_mode = 1
@@ -20,6 +22,13 @@ fog_depth_end = 30.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_kldst"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_b2bpf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7lihs"]
+albedo_color = Color(0.801263, 4.23551e-06, 2.88785e-07, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fgofq"]
+
 [node name="Game" type="Node3D"]
 script = ExtResource("1_gl6un")
 
@@ -35,63 +44,65 @@ environment = SubResource("Environment_gl6un")
 
 [node name="Player1Office" type="Node3D" parent="."]
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Player1Office"]
+[node name="Lights" type="Node3D" parent="Player1Office"]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -5.09657)
 light_energy = 20.0
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D3" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D4" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D4" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D5" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D5" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D6" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D6" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D7" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D7" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D8" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D8" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D9" type="OmniLight3D" parent="Player1Office"]
+[node name="OmniLight3D9" type="OmniLight3D" parent="Player1Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
@@ -107,63 +118,65 @@ transform = Transform3D(1.19249e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, 1.19249e-09, -2
 [node name="Player2Office" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.134853, 0, 47.3015)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Player2Office"]
+[node name="Lights" type="Node3D" parent="Player2Office"]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -5.09657)
 light_energy = 20.0
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D3" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D4" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D4" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D5" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D5" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -1.54421)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D6" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D6" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D7" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D7" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D8" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D8" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="OmniLight3D9" type="OmniLight3D" parent="Player2Office"]
+[node name="OmniLight3D9" type="OmniLight3D" parent="Player2Office/Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -8.5399)
 light_energy = 0.1
 light_specular = 0.1
@@ -176,6 +189,28 @@ transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 
 [node name="Camera" parent="Player2Office" instance=ExtResource("4_kldst")]
 transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 2.45719, -0.00380313, -2.26488)
 
-[node name="Door" type="MeshInstance3D" parent="Player2Office"]
+[node name="DoorSystem" type="Node3D" parent="Player2Office"]
+
+[node name="Door" type="Node3D" parent="Player2Office/DoorSystem"]
+script = ExtResource("5_b2bpf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player2Office/DoorSystem/Door"]
 transform = Transform3D(0.1, 0, 0, 0, 4, 0, 0, 0, 4.25, 6.26, 6, -5)
 mesh = SubResource("BoxMesh_kldst")
+skeleton = NodePath("../../..")
+
+[node name="Button" type="StaticBody3D" parent="Player2Office/DoorSystem"]
+script = ExtResource("6_7lihs")
+door = NodePath("../Door")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player2Office/DoorSystem/Button"]
+transform = Transform3D(0.1, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 6.13514, 2.29754, -2.57276)
+mesh = SubResource("BoxMesh_b2bpf")
+surface_material_override/0 = SubResource("StandardMaterial3D_7lihs")
+
+[node name="ButtonArea" type="Area3D" parent="Player2Office/DoorSystem/Button"]
+transform = Transform3D(0.1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.0555639, -0.548939, 0.632984)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/DoorSystem/Button/ButtonArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.1148, 5.72582, -6.42959)
+shape = SubResource("BoxShape3D_fgofq")
