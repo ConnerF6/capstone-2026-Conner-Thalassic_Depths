@@ -10,6 +10,14 @@ script = ExtResource("1_rpqav")
 [node name="Camera3D" type="Camera3D" parent="CameraRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.83276, -5.13152)
 
+[node name="CameraUI" type="CanvasLayer" parent="CameraRig/Camera3D"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CameraRig/Camera3D/CameraUI"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="CameraRig/Camera3D/CameraUI/SubViewportContainer"]
+
 [node name="Flashlight" type="SpotLight3D" parent="CameraRig"]
 transform = Transform3D(-1.74846e-07, 0, -1, 0, 1, 0, 1, 0, -1.74846e-07, -2.92173, 1.66311, -5.1656)
 visible = false
