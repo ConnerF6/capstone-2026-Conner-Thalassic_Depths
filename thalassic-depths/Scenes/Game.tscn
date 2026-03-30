@@ -1,11 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=14 format=3 uid="uid://j5auqypksexh"]
 
-[ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scenes/Game.gd" id="1_gl6un"]
+[ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scripts/Game.gd" id="1_gl6un"]
 [ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
 [ext_resource type="PackedScene" uid="uid://uvicjkti4jkx" path="res://Scenes/Objects/Table.glb" id="3_j5yw3"]
 [ext_resource type="PackedScene" uid="uid://6daytslol0xw" path="res://Scenes/Objects/Camera.glb" id="4_kldst"]
-[ext_resource type="Script" uid="uid://bg5oviemm882a" path="res://Scenes/door.gd" id="5_b2bpf"]
-[ext_resource type="Script" uid="uid://dqrx7tyk7g7hg" path="res://Scenes/button.gd" id="6_7lihs"]
+[ext_resource type="Script" uid="uid://bg5oviemm882a" path="res://Scripts/door.gd" id="5_b2bpf"]
+[ext_resource type="Script" uid="uid://dqrx7tyk7g7hg" path="res://Scripts/button.gd" id="6_7lihs"]
+[ext_resource type="Script" uid="uid://t1mpmtwrh7b7" path="res://Scenes/camera_system.gd" id="7_2irst"]
+[ext_resource type="PackedScene" uid="uid://cuqw5hmkc6dij" path="res://Scenes/security_camera.tscn" id="7_fgofq"]
 
 [sub_resource type="Environment" id="Environment_gl6un"]
 background_mode = 1
@@ -214,3 +216,25 @@ transform = Transform3D(0.1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.0555639, -0.548939, 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/DoorSystem/Button/ButtonArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.1148, 5.72582, -6.42959)
 shape = SubResource("BoxShape3D_fgofq")
+
+[node name="CameraSystem" type="Node3D" parent="."]
+script = ExtResource("7_2irst")
+
+[node name="TopFloor" type="Node3D" parent="CameraSystem"]
+
+[node name="Cam1" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.227739, 0.877292, 0.106212, -0.468057, 7.67376, 5.52784, -9.32033)
+
+[node name="Cam2" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(0.761027, 0.160891, -0.628452, -0.0285284, 0.97612, 0.215352, 0.648092, -0.14596, 0.747444, 16.5444, 5.52706, 8.18852)
+
+[node name="Cam3" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.549575, -0.195273, 0.812303, -0.0285284, 0.976119, 0.215352, -0.834957, 0.0951784, -0.542022, 13.129, 5.52706, 1.05195)
+
+[node name="BottomFloor" type="Node3D" parent="CameraSystem"]
+
+[node name="Cam1" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.915806, -0.306323, -0.259745, 0.0492067, 0.556286, -0.829533, 0.398597, -0.772472, -0.494377, 7.67376, -12.6872, -9.32033)
+
+[node name="Cam2" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.781892, -0.541261, 0.309323, 0.0487887, -0.547782, -0.835197, 0.621501, -0.637942, 0.454714, 16.5444, -12.688, 8.18852)

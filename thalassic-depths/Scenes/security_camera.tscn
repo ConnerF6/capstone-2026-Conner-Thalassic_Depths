@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://cuqw5hmkc6dij"]
+
+[ext_resource type="Environment" uid="uid://cuychhk4588si" path="res://Enviorments/NightVision.tres" id="1_ts7om"]
+[ext_resource type="Script" uid="uid://csx2ey3ybmlfl" path="res://Scenes/securitycamera.gd" id="1_w5ecb"]
+
+[node name="SecurityCamera" type="Node3D"]
+script = ExtResource("1_w5ecb")
+
+[node name="CameraRig" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+environment = ExtResource("1_ts7om")

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://ovs8hom5wfos"]
+[gd_scene load_steps=4 format=3 uid="uid://ovs8hom5wfos"]
 
 [ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
+[ext_resource type="Texture2D" uid="uid://8w6vmviejqmw" path="res://2DArt/CameraOutline (1).png" id="2_gntrk"]
+[ext_resource type="Texture2D" uid="uid://crcdof66j6q3g" path="res://2DArt/ExitArrow.png" id="3_dewec"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_rpqav")
@@ -12,11 +14,114 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.83276, -5.13152)
 
 [node name="CameraUI" type="CanvasLayer" parent="CameraRig/Camera3D"]
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="CameraRig/Camera3D/CameraUI"]
+[node name="CameraOverlay" type="Control" parent="CameraRig/Camera3D/CameraUI"]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="SubViewport" type="SubViewport" parent="CameraRig/Camera3D/CameraUI/SubViewportContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CameraRig/Camera3D/CameraUI/CameraOverlay"]
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="SubViewport" type="SubViewport" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/SubViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="FloorButtons" type="Control" parent="CameraRig/Camera3D/CameraUI/CameraOverlay"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TopFloorButton" type="Button" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/FloorButtons"]
+layout_mode = 0
+offset_left = 612.0
+offset_top = 348.0
+offset_right = 722.0
+offset_bottom = 379.0
+text = "Top Floor
+"
+
+[node name="BottomFloorButton" type="Button" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/FloorButtons"]
+layout_mode = 0
+offset_left = 612.0
+offset_top = 385.0
+offset_right = 722.0
+offset_bottom = 416.0
+text = "Bottom Floor
+"
+
+[node name="CameraList" type="Control" parent="CameraRig/Camera3D/CameraUI/CameraOverlay"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CamBtn1" type="TextureButton" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/CameraList"]
+layout_mode = 0
+offset_left = 755.0
+offset_top = 443.0
+offset_right = 851.0
+offset_bottom = 507.0
+scale = Vector2(0.75, 0.75)
+texture_normal = ExtResource("2_gntrk")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/CameraList/CamBtn1"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 1"
+
+[node name="CamBtn2" type="TextureButton" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/CameraList"]
+layout_mode = 0
+offset_left = 755.0
+offset_top = 356.0
+offset_right = 851.0
+offset_bottom = 420.0
+scale = Vector2(0.75, 0.75)
+texture_normal = ExtResource("2_gntrk")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/CameraList/CamBtn2"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 1"
+
+[node name="CamBtn3" type="TextureButton" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/CameraList"]
+layout_mode = 0
+offset_left = 859.0
+offset_top = 391.0
+offset_right = 955.0
+offset_bottom = 455.0
+scale = Vector2(0.75, 0.75)
+texture_normal = ExtResource("2_gntrk")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/CameraList/CamBtn3"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 1"
+
+[node name="ExitHelper" type="Panel" parent="CameraRig/Camera3D/CameraUI/CameraOverlay"]
+layout_mode = 0
+offset_left = 377.0
+offset_top = 536.0
+offset_right = 777.0
+offset_bottom = 616.0
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraRig/Camera3D/CameraUI/CameraOverlay/ExitHelper"]
+position = Vector2(209, 41)
+scale = Vector2(3, 1)
+texture = ExtResource("3_dewec")
 
 [node name="Flashlight" type="SpotLight3D" parent="CameraRig"]
 transform = Transform3D(-1.74846e-07, 0, -1, 0, 1, 0, 1, 0, -1.74846e-07, -2.92173, 1.66311, -5.1656)
