@@ -17,3 +17,8 @@ config/features=PackedStringArray("4.4", "Forward Plus")
 [autoload]
 
 NetworkManager="*res://Scripts/NetworkManager.gd"
+
+[global_group]
+
+monitor=""
+camera_system=""

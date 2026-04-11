@@ -24,6 +24,11 @@ var holding_left: bool = false
 var holding_right: bool = false
 var is_player_one: bool = false
 
+var camera_ui_canvas: CanvasLayer = null
+var camera_ui: Control = null
+var in_camera_system: bool = false
+const CAMERA_UI_SCENE = preload("res://Scenes/CameraUI.tscn")
+
 @onready var camera_rig: Node3D = $CameraRig
 @onready var flashlight: SpotLight3D = $CameraRig/Flashlight
 @onready var camera: Camera3D = $CameraRig/Camera3D
@@ -57,6 +62,7 @@ func _ready():
 
 	camera_rig.rotation_degrees.y = CAM_ANGLES[CamState.CENTER]
 	flashlight.visible = false
+	_setup_monitor_interaction()
 
 func _process(delta):
 	_handle_camera(delta)
@@ -125,18 +131,46 @@ func _tween_to(new_state: CamState):
 	tween.tween_property(camera, "rotation_degrees:y", target_angle, TWEEN_DURATION)
 	tween.tween_callback(func(): is_tweening = false)
 
+func _setup_monitor_interaction():
+	camera_ui_canvas = CAMERA_UI_SCENE.instantiate()
+	camera_ui = camera_ui_canvas.get_node("CameraOverlay")
+	add_child(camera_ui_canvas)
+	camera_ui_canvas.hide()
+
+	var camera_system = get_tree().get_nodes_in_group("camera_system")
+	if camera_system.is_empty():
+		push_error("CameraSystem node not found!")
+		return
+
+	camera_ui.setup(camera_system[0], multiplayer.get_unique_id())
+	camera_ui.closed.connect(_close_camera_system)
+
+func _open_camera_system():
+	if camera_ui_canvas == null:
+		push_error("camera_ui_canvas is null for player: " + str(multiplayer.get_unique_id()))
+		return
+	if camera_ui == null:
+		push_error("camera_ui is null for player: " + str(multiplayer.get_unique_id()))
+		return
+	in_camera_system = true
+	camera_ui_canvas.show()
+	var cams = camera_ui.camera_system.get_cameras("top")
+	if cams.size() > 0:
+		camera_ui._select_camera(cams[0])
+
+func _close_camera_system():
+	in_camera_system = false
+	camera_ui_canvas.hide()
+	if camera_ui.active_camera:
+		camera_ui.active_camera.deactivate()
+
 func _try_interact():
 	var space_state = get_world_3d().direct_space_state
 	var cam = $CameraRig/Camera3D
 	var mouse_pos = get_viewport().get_mouse_position()
 
-	# Use the camera's global transform directly
 	var ray_origin = cam.global_transform.origin
-	var ray_dir = cam.project_ray_normal(mouse_pos)
-	var ray_end = ray_origin + ray_dir * 20.0
-
-	print("Ray origin: ", ray_origin)
-	print("Ray end: ", ray_end)
+	var ray_end = ray_origin + cam.project_ray_normal(mouse_pos) * 20.0
 
 	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
 	query.collision_mask = 1
@@ -144,27 +178,33 @@ func _try_interact():
 	query.collide_with_areas = true
 	var result = space_state.intersect_ray(query)
 
-	print("Ray result: ", result)
-
-	if result and result.collider.get_parent().has_method("activate"):
-		result.collider.get_parent().activate()
+	if result:
+		var parent = result.collider.get_parent()
+		if parent.has_method("activate"):
+			parent.activate()
+		elif result.collider.is_in_group("monitor"):
+			_open_camera_system()
 
 func _input(event):
 	if not (event is InputEventMouseButton):
 		return
-	if not event.pressed:
-		return
 	if event.button_index != MOUSE_BUTTON_LEFT:
 		return
-
-	# Player 1 — flashlight on right look, hold to shine
-	if is_player_one:
-		if event is InputEventMouseButton:
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				if current_state == CamState.RIGHT:
-					flashlight.visible = event.pressed
+	if is_player_one and not event.pressed:
+		if current_state == CamState.RIGHT:
+			flashlight.visible = false
 		return
-
-	# Player 2 — button interaction on left look
+	if not event.pressed:
+		return
+	# Player 1
+	if is_player_one:
+		if current_state == CamState.RIGHT:
+			flashlight.visible = true
+		elif current_state == CamState.CENTER:
+			_try_interact()
+		return
+	# Player 2
 	if current_state == CamState.LEFT:
+		_try_interact()
+	elif current_state == CamState.CENTER:
 		_try_interact()

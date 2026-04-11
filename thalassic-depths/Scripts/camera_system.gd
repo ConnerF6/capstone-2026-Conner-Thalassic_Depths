@@ -16,9 +16,17 @@ func _ready():
 	for cam in $BottomFloor.get_children():
 		bottom_cameras.append(cam)
 
-func get_cameras(floor: String) -> Array:
-	return top_cameras if floor == "top" else bottom_cameras
+func get_cameras(new_floor: String) -> Array:
+	var result = []
+	for cam in $TopFloor.get_children():
+		if cam.floor_group == new_floor:
+			result.append(cam)
+	for cam in $BottomFloor.get_children():
+		if cam.floor_group == new_floor:
+			result.append(cam)
+	return result
 
+@rpc("any_peer", "call_local", "reliable")
 func set_player_viewing(player_id: int, cam_label: String):
 	player_viewing[player_id] = cam_label
 	camera_changed.emit(player_id, cam_label)

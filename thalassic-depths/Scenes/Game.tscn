@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=15 format=3 uid="uid://j5auqypksexh"]
 
 [ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scripts/Game.gd" id="1_gl6un"]
 [ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://6daytslol0xw" path="res://Scenes/Objects/Camera.glb" id="4_kldst"]
 [ext_resource type="Script" uid="uid://bg5oviemm882a" path="res://Scripts/door.gd" id="5_b2bpf"]
 [ext_resource type="Script" uid="uid://dqrx7tyk7g7hg" path="res://Scripts/button.gd" id="6_7lihs"]
-[ext_resource type="Script" uid="uid://t1mpmtwrh7b7" path="res://Scenes/camera_system.gd" id="7_2irst"]
+[ext_resource type="Script" uid="uid://t1mpmtwrh7b7" path="res://Scripts/camera_system.gd" id="7_2irst"]
 [ext_resource type="PackedScene" uid="uid://cuqw5hmkc6dij" path="res://Scenes/security_camera.tscn" id="7_fgofq"]
 
 [sub_resource type="Environment" id="Environment_gl6un"]
@@ -21,6 +21,9 @@ fog_light_color = Color(0, 0, 0.0392157, 1)
 fog_density = 0.08
 fog_depth_begin = 5.0
 fog_depth_end = 30.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2irst"]
+size = Vector3(5, 16, 28)
 
 [sub_resource type="BoxMesh" id="BoxMesh_kldst"]
 
@@ -117,6 +120,12 @@ transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 
 [node name="Camera" parent="Player1Office" instance=ExtResource("4_kldst")]
 transform = Transform3D(1.19249e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, 1.19249e-09, -2.30721, -0.00380313, -7.51449)
 
+[node name="Area3D" type="Area3D" parent="Player1Office/Camera" groups=["monitor"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player1Office/Camera/Area3D"]
+transform = Transform3D(1, 0, 2.66454e-15, 0, 1, 0, -2.66454e-15, 0, 1, -14.8158, 31.0679, -22.4562)
+shape = SubResource("BoxShape3D_2irst")
+
 [node name="Player2Office" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.134853, 0, 47.3015)
 
@@ -191,6 +200,12 @@ transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 
 [node name="Camera" parent="Player2Office" instance=ExtResource("4_kldst")]
 transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 2.45719, -0.00380313, -2.26488)
 
+[node name="Area3D" type="Area3D" parent="Player2Office/Camera" groups=["monitor"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/Camera/Area3D"]
+transform = Transform3D(1, 0, 2.66454e-15, 0, 1, 0, -2.66454e-15, 0, 1, -14.8158, 31.0679, -22.4562)
+shape = SubResource("BoxShape3D_2irst")
+
 [node name="DoorSystem" type="Node3D" parent="Player2Office"]
 
 [node name="Door" type="Node3D" parent="Player2Office/DoorSystem"]
@@ -217,7 +232,7 @@ transform = Transform3D(0.1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.0555639, -0.548939, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.1148, 5.72582, -6.42959)
 shape = SubResource("BoxShape3D_fgofq")
 
-[node name="CameraSystem" type="Node3D" parent="."]
+[node name="CameraSystem" type="Node3D" parent="." groups=["camera_system"]]
 script = ExtResource("7_2irst")
 
 [node name="TopFloor" type="Node3D" parent="CameraSystem"]
@@ -227,14 +242,20 @@ transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.
 
 [node name="Cam2" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
 transform = Transform3D(0.761027, 0.160891, -0.628452, -0.0285284, 0.97612, 0.215352, 0.648092, -0.14596, 0.747444, 16.5444, 5.52706, 8.18852)
+cam_label = "CAM 2"
 
 [node name="Cam3" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
 transform = Transform3D(-0.549575, -0.195273, 0.812303, -0.0285284, 0.976119, 0.215352, -0.834957, 0.0951784, -0.542022, 13.129, 5.52706, 1.05195)
+cam_label = "CAM 3"
 
 [node name="BottomFloor" type="Node3D" parent="CameraSystem"]
 
 [node name="Cam1" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
 transform = Transform3D(-0.915806, -0.306323, -0.259745, 0.0492067, 0.556286, -0.829533, 0.398597, -0.772472, -0.494377, 7.67376, -12.6872, -9.32033)
+cam_label = "CAM 4"
+floor_group = "bottom"
 
 [node name="Cam2" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
 transform = Transform3D(-0.781892, -0.541261, 0.309323, 0.0487887, -0.547782, -0.835197, 0.621501, -0.637942, 0.454714, 16.5444, -12.688, 8.18852)
+cam_label = "CAM 5"
+floor_group = "bottom"
