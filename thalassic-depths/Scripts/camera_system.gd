@@ -36,3 +36,12 @@ func get_other_player_camera(my_id: int) -> String:
 		if id != my_id:
 			return player_viewing[id]
 	return ""
+
+func get_camera_by_label(label: String) -> Node:
+	for cam in $TopFloor.get_children():
+		if cam.cam_label == label:
+			return cam
+	for cam in $BottomFloor.get_children():
+		if cam.cam_label == label:
+			return cam
+	return null
