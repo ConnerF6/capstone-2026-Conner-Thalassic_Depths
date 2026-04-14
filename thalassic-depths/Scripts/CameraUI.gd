@@ -1,10 +1,9 @@
 extends Control
-
 signal closed
 
 @onready var top_btn: Button = $FloorButtons/TopFloorButton
 @onready var bottom_btn: Button = $FloorButtons/BottomFloorButton
-@onready var exit_hint = $ExitHelper
+@onready var cam_list: Node = $CameraList
 
 var camera_system: Node = null
 var active_camera: Node = null
@@ -15,7 +14,20 @@ func setup(cs: Node, player_id: int):
 	camera_system = cs
 	my_id = player_id
 	camera_system.camera_changed.connect(_on_camera_changed)
+
+	# Wire cam buttons in code only (not in editor)
+	for btn in cam_list.get_children():
+		if not btn.pressed.is_connected(_on_cam_btn_pressed.bind(btn)):
+			btn.pressed.connect(_on_cam_btn_pressed.bind(btn))
+
 	_switch_floor("top")
+
+func _on_cam_btn_pressed(btn: Button):
+	var cam = camera_system.get_camera_by_label(btn.cam_label)
+	if cam == null:
+		push_error("No camera found for label: " + btn.cam_label)
+		return
+	_select_camera(cam)
 
 func _select_camera(cam: Node):
 	print("Selecting camera: ", cam.cam_label)
@@ -30,12 +42,14 @@ func _switch_floor(new_floor: String):
 	current_floor = new_floor
 	top_btn.modulate = Color.WHITE if new_floor == "top" else Color(0.5, 0.5, 0.5)
 	bottom_btn.modulate = Color.WHITE if new_floor == "bottom" else Color(0.5, 0.5, 0.5)
+
 	if active_camera:
 		active_camera.deactivate()
 		active_camera = null
-	# Show only buttons matching current floor
-	for btn in $CameraList.get_children():
+
+	for btn in cam_list.get_children():
 		btn.visible = (btn.floor_group == new_floor)
+
 	_update_button_indicators()
 
 func _on_camera_changed(_player_id: int, _cam_label: String):
@@ -43,7 +57,7 @@ func _on_camera_changed(_player_id: int, _cam_label: String):
 
 func _update_button_indicators():
 	var other_cam = camera_system.get_other_player_camera(my_id)
-	for btn in $CameraList.get_children():
+	for btn in cam_list.get_children():
 		if btn.floor_group != current_floor:
 			continue
 		var cam = camera_system.get_camera_by_label(btn.cam_label)
@@ -55,19 +69,6 @@ func _update_button_indicators():
 			btn.modulate = Color.WHITE
 		else:
 			btn.modulate = Color(0.7, 0.7, 0.7)
-
-# Connect each CamBtn's pressed signal to this in the editor
-func _on_cam_btn_1_pressed():
-	var cam = camera_system.get_camera_by_label($CameraList/CamBtn1.cam_label)
-	if cam: _select_camera(cam)
-
-func _on_cam_btn_2_pressed():
-	var cam = camera_system.get_camera_by_label($CameraList/CamBtn2.cam_label)
-	if cam: _select_camera(cam)
-
-func _on_cam_btn_3_pressed():
-	var cam = camera_system.get_camera_by_label($CameraList/CamBtn3.cam_label)
-	if cam: _select_camera(cam)
 
 func _on_top_floor_button_pressed():
 	_switch_floor("top")

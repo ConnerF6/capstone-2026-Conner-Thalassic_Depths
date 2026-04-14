@@ -23,15 +23,13 @@ var hold_timer: float = 0.0
 var holding_left: bool = false
 var holding_right: bool = false
 var is_player_one: bool = false
-
-var camera_ui_canvas: CanvasLayer = null
-var camera_ui: Control = null
 var in_camera_system: bool = false
-const CAMERA_UI_SCENE = preload("res://Scenes/CameraUI.tscn")
 
 @onready var camera_rig: Node3D = $CameraRig
 @onready var flashlight: SpotLight3D = $CameraRig/Flashlight
 @onready var camera: Camera3D = $CameraRig/Camera3D
+@onready var camera_ui_root: SubViewportContainer = $SubViewportContainer
+@onready var camera_ui: Control = $SubViewportContainer/SubViewport/CameraOverlay
 
 func _ready():
 	print("Player node name: ", name)
@@ -39,6 +37,7 @@ func _ready():
 
 	$CameraRig/Camera3D.current = false
 	set_process(false)
+	camera_ui_root.hide()
 
 	if name != str(multiplayer.get_unique_id()):
 		print("Not my player, skipping: ", name)
@@ -62,13 +61,62 @@ func _ready():
 
 	camera_rig.rotation_degrees.y = CAM_ANGLES[CamState.CENTER]
 	flashlight.visible = false
-	_setup_monitor_interaction()
+
+	var camera_system = get_tree().get_nodes_in_group("camera_system")
+	if camera_system.is_empty():
+		push_error("CameraSystem node not found!")
+		return
+	camera_ui.setup(camera_system[0], multiplayer.get_unique_id())
+	camera_ui.closed.connect(_close_camera_system)
+
+func _open_camera_system():
+	in_camera_system = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	camera_ui_root.show()
+	camera.current = false
+	# Give the SubViewport the same world as the main scene
+	var subviewport = $SubViewportContainer/SubViewport
+	subviewport.world_3d = get_viewport().world_3d
+	var cams = camera_ui.camera_system.get_cameras("top")
+	if cams.size() > 0:
+		camera_ui._select_camera(cams[0])
+
+func _close_camera_system():
+	in_camera_system = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	camera_ui_root.hide()
+	if camera_ui.active_camera:
+		camera_ui.active_camera.deactivate()
+	camera.current = true
+
+func _try_interact():
+	var space_state = get_world_3d().direct_space_state
+	var cam = $CameraRig/Camera3D
+	var mouse_pos = get_viewport().get_mouse_position()
+
+	var ray_origin = cam.global_transform.origin
+	var ray_end = ray_origin + cam.project_ray_normal(mouse_pos) * 20.0
+
+	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+	query.collision_mask = 1
+	query.collide_with_bodies = false
+	query.collide_with_areas = true
+	var result = space_state.intersect_ray(query)
+
+	if result:
+		var parent = result.collider.get_parent()
+		if parent.has_method("activate"):
+			parent.activate()
+		elif result.collider.is_in_group("monitor"):
+			_open_camera_system()
 
 func _process(delta):
 	_handle_camera(delta)
 
 func _handle_camera(delta: float):
 	if is_tweening:
+		return
+	if in_camera_system:
 		return
 
 	var vp_size = get_viewport().get_visible_rect().size
@@ -131,61 +179,11 @@ func _tween_to(new_state: CamState):
 	tween.tween_property(camera, "rotation_degrees:y", target_angle, TWEEN_DURATION)
 	tween.tween_callback(func(): is_tweening = false)
 
-func _setup_monitor_interaction():
-	camera_ui_canvas = CAMERA_UI_SCENE.instantiate()
-	camera_ui = camera_ui_canvas.get_node("CameraOverlay")
-	add_child(camera_ui_canvas)
-	camera_ui_canvas.hide()
-
-	var camera_system = get_tree().get_nodes_in_group("camera_system")
-	if camera_system.is_empty():
-		push_error("CameraSystem node not found!")
-		return
-
-	camera_ui.setup(camera_system[0], multiplayer.get_unique_id())
-	camera_ui.closed.connect(_close_camera_system)
-
-func _open_camera_system():
-	if camera_ui_canvas == null:
-		push_error("camera_ui_canvas is null for player: " + str(multiplayer.get_unique_id()))
-		return
-	if camera_ui == null:
-		push_error("camera_ui is null for player: " + str(multiplayer.get_unique_id()))
-		return
-	in_camera_system = true
-	camera_ui_canvas.show()
-	var cams = camera_ui.camera_system.get_cameras("top")
-	if cams.size() > 0:
-		camera_ui._select_camera(cams[0])
-
-func _close_camera_system():
-	in_camera_system = false
-	camera_ui_canvas.hide()
-	if camera_ui.active_camera:
-		camera_ui.active_camera.deactivate()
-
-func _try_interact():
-	var space_state = get_world_3d().direct_space_state
-	var cam = $CameraRig/Camera3D
-	var mouse_pos = get_viewport().get_mouse_position()
-
-	var ray_origin = cam.global_transform.origin
-	var ray_end = ray_origin + cam.project_ray_normal(mouse_pos) * 20.0
-
-	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
-	query.collision_mask = 1
-	query.collide_with_bodies = false
-	query.collide_with_areas = true
-	var result = space_state.intersect_ray(query)
-
-	if result:
-		var parent = result.collider.get_parent()
-		if parent.has_method("activate"):
-			parent.activate()
-		elif result.collider.is_in_group("monitor"):
-			_open_camera_system()
-
 func _input(event):
+	if in_camera_system:
+		get_viewport().set_input_as_handled()
+		$SubViewportContainer/SubViewport.push_input(event)
+		return
 	if not (event is InputEventMouseButton):
 		return
 	if event.button_index != MOUSE_BUTTON_LEFT:
@@ -196,14 +194,12 @@ func _input(event):
 		return
 	if not event.pressed:
 		return
-	# Player 1
 	if is_player_one:
 		if current_state == CamState.RIGHT:
 			flashlight.visible = true
 		elif current_state == CamState.CENTER:
 			_try_interact()
 		return
-	# Player 2
 	if current_state == CamState.LEFT:
 		_try_interact()
 	elif current_state == CamState.CENTER:

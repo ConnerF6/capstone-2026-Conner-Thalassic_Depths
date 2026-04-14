@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://ovs8hom5wfos"]
+[gd_scene load_steps=3 format=3 uid="uid://ovs8hom5wfos"]
 
 [ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
+[ext_resource type="PackedScene" uid="uid://dk6h4elnlteha" path="res://Scenes/CameraUI.tscn" id="2_kyqiw"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_rpqav")
@@ -19,3 +20,12 @@ shadow_enabled = true
 spot_range = 15.0
 spot_attenuation = 1.5
 spot_angle = 14.5
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+stretch = true
+
+[node name="SubViewport" parent="SubViewportContainer" instance=ExtResource("2_kyqiw")]
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
