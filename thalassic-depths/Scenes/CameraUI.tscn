@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://crcdof66j6q3g" path="res://2DArt/ExitArrow.png" id="2_3xbnt"]
 [ext_resource type="Script" uid="uid://gux6mh1ykdyj" path="res://Scripts/CamButton.gd" id="3_rrmnb"]
 
-[node name="SubViewport" type="SubViewport"]
+[node name="CameraUI" type="CanvasLayer"]
 
 [node name="CameraOverlay" type="Control" parent="."]
 layout_mode = 3

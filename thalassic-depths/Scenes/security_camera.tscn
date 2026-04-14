@@ -10,3 +10,5 @@ script = ExtResource("1_w5ecb")
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig"]
 environment = ExtResource("1_ts7om")
+
+[node name="SubViewport" type="SubViewport" parent="."]

@@ -8,20 +8,24 @@ const PAN_DURATION = 5.5
 
 @onready var camera_rig: Node3D = $CameraRig
 @onready var cam: Camera3D = $CameraRig/Camera3D
+@onready var viewport: SubViewport = $SubViewport
 
 var pan_tween: Tween
 
 func _ready():
-	cam.current = false
+	# Move the camera into the SubViewport so it renders independently
+	camera_rig.reparent(viewport)
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_pan_to(PAN_ANGLE)
+
+func get_texture() -> ViewportTexture:
+	return viewport.get_texture()
 
 func activate():
 	print("Camera activated: ", cam_label)
-	cam.current = true
 
 func deactivate():
 	print("Camera deactivated: ", cam_label)
-	cam.current = false
 
 func _pan_to(target: float):
 	if pan_tween:
