@@ -44,9 +44,6 @@ func _switch_floor(new_floor: String):
 	current_floor = new_floor
 	top_btn.modulate = Color.WHITE if new_floor == "top" else Color(0.5, 0.5, 0.5)
 	bottom_btn.modulate = Color.WHITE if new_floor == "bottom" else Color(0.5, 0.5, 0.5)
-	if active_camera:
-		active_camera.deactivate()
-		active_camera = null
 	for btn in cam_list.get_children():
 		btn.visible = (btn.floor_group == new_floor)
 	_update_button_indicators()
