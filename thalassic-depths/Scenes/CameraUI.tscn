@@ -5,13 +5,17 @@
 [ext_resource type="Texture2D" uid="uid://crcdof66j6q3g" path="res://2DArt/ExitArrow.png" id="2_3xbnt"]
 [ext_resource type="Script" uid="uid://gux6mh1ykdyj" path="res://Scripts/CamButton.gd" id="3_rrmnb"]
 
-[node name="CameraUI" type="CanvasLayer"]
+[node name="CameraUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
 
 [node name="CameraOverlay" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 script = ExtResource("1_3xbnt")
 
 [node name="FloorButtons" type="Control" parent="CameraOverlay"]
@@ -19,6 +23,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="TopFloorButton" type="Button" parent="CameraOverlay/FloorButtons"]
 z_index = 1
@@ -44,6 +49,7 @@ text = "Bottom Floor
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="CamBtn1" type="Button" parent="CameraOverlay/CameraList"]
 z_index = 1
@@ -114,12 +120,13 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn4" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
-offset_left = 863.0
-offset_top = 378.0
-offset_right = 959.0
-offset_bottom = 442.0
+offset_left = 764.0
+offset_top = 304.0
+offset_right = 860.0
+offset_bottom = 368.0
 scale = Vector2(0.75, 0.75)
 script = ExtResource("3_rrmnb")
 cam_label = "CAM 4"
@@ -138,6 +145,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn5" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 863.0
@@ -174,12 +182,11 @@ position = Vector2(209, 41)
 scale = Vector2(3, 1)
 texture = ExtResource("2_3xbnt")
 
-[node name="BackdropPanel" type="Panel" parent="CameraOverlay"]
+[node name="FeedDisplay" type="TextureRect" parent="CameraOverlay"]
 layout_mode = 0
-offset_left = -11.0
-offset_top = -7.0
-offset_right = 1161.0
-offset_bottom = 652.0
+offset_right = 1152.0
+offset_bottom = 650.0
+mouse_filter = 2
 
 [connection signal="pressed" from="CameraOverlay/FloorButtons/TopFloorButton" to="CameraOverlay" method="_on_top_floor_button_pressed"]
 [connection signal="pressed" from="CameraOverlay/FloorButtons/BottomFloorButton" to="CameraOverlay" method="_on_bottom_floor_button_pressed"]

@@ -28,8 +28,8 @@ var in_camera_system: bool = false
 @onready var camera_rig: Node3D = $CameraRig
 @onready var flashlight: SpotLight3D = $CameraRig/Flashlight
 @onready var camera: Camera3D = $CameraRig/Camera3D
-@onready var camera_ui_root: SubViewportContainer = $SubViewportContainer
-@onready var camera_ui: Control = $SubViewportContainer/SubViewport/CameraOverlay
+@onready var camera_ui_root: Control = $CameraUI
+@onready var camera_ui: Control = $CameraUI/CameraOverlay
 
 func _ready():
 	print("Player node name: ", name)
@@ -64,19 +64,33 @@ func _ready():
 
 	var camera_system = get_tree().get_nodes_in_group("camera_system")
 	if camera_system.is_empty():
-		push_error("CameraSystem node not found!")
+		await get_tree().process_frame
+		camera_system = get_tree().get_nodes_in_group("camera_system")
+	
+	print("About to call setup, camera_ui: ", camera_ui)
+	var camera_system_nodes = get_tree().get_nodes_in_group("camera_system")
+	print("Found camera_system nodes: ", camera_system_nodes)
+	if camera_system_nodes.is_empty():
+		push_error("CameraSystem node not found in group!")
 		return
-	camera_ui.setup(camera_system[0], multiplayer.get_unique_id())
+	camera_ui.setup(camera_system_nodes[0], multiplayer.get_unique_id())
+	print("Setup complete")
 	camera_ui.closed.connect(_close_camera_system)
 
+
 func _open_camera_system():
+	print("Opening camera system, camera_ui: ", camera_ui)
+	print("camera_system on ui: ", camera_ui.camera_system)
+	
+	if camera_ui.camera_system == null:
+		push_error("CameraOverlay has no camera_system — setup() may not have run yet")
+		return
+	
 	in_camera_system = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	camera_ui_root.show()
 	camera.current = false
-	# Give the SubViewport the same world as the main scene
-	var subviewport = $SubViewportContainer/SubViewport
-	subviewport.world_3d = get_viewport().world_3d
+	
 	var cams = camera_ui.camera_system.get_cameras("top")
 	if cams.size() > 0:
 		camera_ui._select_camera(cams[0])
@@ -181,8 +195,6 @@ func _tween_to(new_state: CamState):
 
 func _input(event):
 	if in_camera_system:
-		get_viewport().set_input_as_handled()
-		$SubViewportContainer/SubViewport.push_input(event)
 		return
 	if not (event is InputEventMouseButton):
 		return
