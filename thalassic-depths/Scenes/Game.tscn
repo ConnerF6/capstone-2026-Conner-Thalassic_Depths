@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=16 format=3 uid="uid://j5auqypksexh"]
 
 [ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scripts/Game.gd" id="1_gl6un"]
-[ext_resource type="PackedScene" uid="uid://c6dachhoe456" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
+[ext_resource type="PackedScene" uid="uid://bx73wskpl2apc" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
+[ext_resource type="PackedScene" uid="uid://dtcnl33pxp4jp" path="res://Scenes/Objects/Tree.glb" id="3_bf53h"]
 [ext_resource type="PackedScene" uid="uid://uvicjkti4jkx" path="res://Scenes/Objects/Table.glb" id="3_j5yw3"]
 [ext_resource type="PackedScene" uid="uid://6daytslol0xw" path="res://Scenes/Objects/Camera.glb" id="4_kldst"]
 [ext_resource type="Script" uid="uid://bg5oviemm882a" path="res://Scripts/door.gd" id="5_b2bpf"]
@@ -39,6 +40,8 @@ script = ExtResource("1_gl6un")
 
 [node name="Thallasic" parent="." instance=ExtResource("1_iukft")]
 
+[node name="Tree" parent="Thallasic" instance=ExtResource("3_bf53h")]
+
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://ovs8hom5wfos")
 spawn_path = NodePath("..")
@@ -52,35 +55,35 @@ environment = SubResource("Environment_gl6un")
 [node name="Lights" type="Node3D" parent="Player1Office"]
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Player1Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -5.09657)
-light_energy = 20.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.68795, -6.26868)
+light_energy = 10.0
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Player1Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -1.54421)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -2.39142)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="Player1Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -1.54421)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -2.39142)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D4" type="OmniLight3D" parent="Player1Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -1.54421)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -2.6503)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D5" type="OmniLight3D" parent="Player1Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -1.54421)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -2.6503)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
@@ -128,6 +131,44 @@ shape = SubResource("BoxShape3D_2irst")
 
 [node name="Player2Office" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.134853, 0, 47.3015)
+
+[node name="Table" parent="Player2Office" instance=ExtResource("3_j5yw3")]
+transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 2.3736, -0.0180893, -2.59657)
+
+[node name="Camera" parent="Player2Office" instance=ExtResource("4_kldst")]
+transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 2.45719, -0.00380313, -2.26488)
+
+[node name="Area3D" type="Area3D" parent="Player2Office/Camera" groups=["monitor"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/Camera/Area3D"]
+transform = Transform3D(1, 0, 2.66454e-15, 0, 1, 0, -2.66454e-15, 0, 1, -14.8158, 31.0679, -22.4562)
+shape = SubResource("BoxShape3D_2irst")
+
+[node name="DoorSystem" type="Node3D" parent="Player2Office"]
+
+[node name="Door" type="Node3D" parent="Player2Office/DoorSystem"]
+script = ExtResource("5_b2bpf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player2Office/DoorSystem/Door"]
+transform = Transform3D(0.1, 0, 0, 0, 4, 0, 0, 0, 4.25, 6.26, 6, -5)
+mesh = SubResource("BoxMesh_kldst")
+skeleton = NodePath("../../..")
+
+[node name="Button" type="StaticBody3D" parent="Player2Office/DoorSystem"]
+script = ExtResource("6_7lihs")
+door = NodePath("../Door")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player2Office/DoorSystem/Button"]
+transform = Transform3D(0.1, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 6.13514, 2.29754, -2.57276)
+mesh = SubResource("BoxMesh_b2bpf")
+surface_material_override/0 = SubResource("StandardMaterial3D_7lihs")
+
+[node name="ButtonArea" type="Area3D" parent="Player2Office/DoorSystem/Button"]
+transform = Transform3D(0.1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.0555639, -0.548939, 0.632984)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/DoorSystem/Button/ButtonArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.1148, 5.72582, -6.42959)
+shape = SubResource("BoxShape3D_fgofq")
 
 [node name="Lights" type="Node3D" parent="Player2Office"]
 
@@ -194,59 +235,30 @@ light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
-[node name="Table" parent="Player2Office" instance=ExtResource("3_j5yw3")]
-transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 2.3736, -0.0180893, -2.59657)
-
-[node name="Camera" parent="Player2Office" instance=ExtResource("4_kldst")]
-transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 2.45719, -0.00380313, -2.26488)
-
-[node name="Area3D" type="Area3D" parent="Player2Office/Camera" groups=["monitor"]]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/Camera/Area3D"]
-transform = Transform3D(1, 0, 2.66454e-15, 0, 1, 0, -2.66454e-15, 0, 1, -14.8158, 31.0679, -22.4562)
-shape = SubResource("BoxShape3D_2irst")
-
-[node name="DoorSystem" type="Node3D" parent="Player2Office"]
-
-[node name="Door" type="Node3D" parent="Player2Office/DoorSystem"]
-script = ExtResource("5_b2bpf")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player2Office/DoorSystem/Door"]
-transform = Transform3D(0.1, 0, 0, 0, 4, 0, 0, 0, 4.25, 6.26, 6, -5)
-mesh = SubResource("BoxMesh_kldst")
-skeleton = NodePath("../../..")
-
-[node name="Button" type="StaticBody3D" parent="Player2Office/DoorSystem"]
-script = ExtResource("6_7lihs")
-door = NodePath("../Door")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player2Office/DoorSystem/Button"]
-transform = Transform3D(0.1, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 6.13514, 2.29754, -2.57276)
-mesh = SubResource("BoxMesh_b2bpf")
-surface_material_override/0 = SubResource("StandardMaterial3D_7lihs")
-
-[node name="ButtonArea" type="Area3D" parent="Player2Office/DoorSystem/Button"]
-transform = Transform3D(0.1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.0555639, -0.548939, 0.632984)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player2Office/DoorSystem/Button/ButtonArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.1148, 5.72582, -6.42959)
-shape = SubResource("BoxShape3D_fgofq")
-
 [node name="CameraSystem" type="Node3D" parent="." groups=["camera_system"]]
 script = ExtResource("7_2irst")
 
 [node name="TopFloor" type="Node3D" parent="CameraSystem"]
 
 [node name="Cam1" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
-transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.227739, 0.877292, 0.106212, -0.468057, 7.67376, 5.52784, -9.32033)
+transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.227739, 0.877292, 0.106212, -0.468057, 7.67376, 5.59257, -9.32033)
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam1/CameraRig" index="0"]
+transform = Transform3D(1, 3.72529e-08, -2.68221e-07, 0, 1, -3.91155e-07, 0, 1.86265e-08, 1, -0.00318432, -0.856776, -0.200388)
 
 [node name="Cam2" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
-transform = Transform3D(0.761027, 0.160891, -0.628452, -0.0285284, 0.97612, 0.215352, 0.648092, -0.14596, 0.747444, 16.5444, 5.52706, 8.18852)
+transform = Transform3D(0.761027, 0.160891, -0.628452, -0.0285284, 0.97612, 0.215352, 0.648092, -0.14596, 0.747444, 16.5444, 5.59179, 8.18852)
 cam_label = "CAM 2"
 
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam2/CameraRig" index="0"]
+transform = Transform3D(1, 2.6077e-07, 8.9407e-08, -7.45058e-09, 1, -2.01166e-07, 2.98023e-08, 2.98023e-08, 1, 0.0302544, -1.03513, -0.228371)
+
 [node name="Cam3" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
-transform = Transform3D(-0.549575, -0.195273, 0.812303, -0.0285284, 0.976119, 0.215352, -0.834957, 0.0951784, -0.542022, 13.129, 5.52706, 1.05195)
+transform = Transform3D(-0.549575, -0.195273, 0.812303, -0.0285284, 0.976119, 0.215352, -0.834957, 0.0951784, -0.542022, 13.129, 5.59179, 1.05195)
 cam_label = "CAM 3"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam3/CameraRig" index="0"]
+transform = Transform3D(1, -1.63913e-07, 5.96046e-08, -7.45058e-09, 1, 4.76837e-07, 2.98023e-08, 3.72529e-09, 1, 0.0302305, -1.03433, -0.228193)
 
 [node name="BottomFloor" type="Node3D" parent="CameraSystem"]
 
@@ -259,3 +271,9 @@ floor_group = "bottom"
 transform = Transform3D(-0.781892, -0.541261, 0.309323, 0.0487887, -0.547782, -0.835197, 0.621501, -0.637942, 0.454714, 16.5444, -12.688, 8.18852)
 cam_label = "CAM 5"
 floor_group = "bottom"
+
+[editable path="CameraSystem/TopFloor/Cam1"]
+[editable path="CameraSystem/TopFloor/Cam2"]
+[editable path="CameraSystem/TopFloor/Cam3"]
+[editable path="CameraSystem/BottomFloor/Cam4"]
+[editable path="CameraSystem/BottomFloor/Cam5"]

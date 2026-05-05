@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bx73wskpl2apc"
-path="res://.godot/imported/Thallasic.glb-6d6c05ac2b2b82156faaae62f0bc1f8f.scn"
+uid="uid://dtcnl33pxp4jp"
+path="res://.godot/imported/Tree.glb-95b1a9316ab441716ec3611130183f7f.scn"
 
 [deps]
 
-source_file="res://Scenes/Objects/Thallasic.glb"
-dest_files=["res://.godot/imported/Thallasic.glb-6d6c05ac2b2b82156faaae62f0bc1f8f.scn"]
+source_file="res://Scenes/Objects/Tree.glb"
+dest_files=["res://.godot/imported/Tree.glb-95b1a9316ab441716ec3611130183f7f.scn"]
 
 [params]
 
