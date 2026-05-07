@@ -1,8 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://j5auqypksexh"]
+[gd_scene load_steps=15 format=3 uid="uid://j5auqypksexh"]
 
 [ext_resource type="Script" uid="uid://b8bcdc2lqc32d" path="res://Scripts/Game.gd" id="1_gl6un"]
-[ext_resource type="PackedScene" uid="uid://bx73wskpl2apc" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
-[ext_resource type="PackedScene" uid="uid://dtcnl33pxp4jp" path="res://Scenes/Objects/Tree.glb" id="3_bf53h"]
+[ext_resource type="PackedScene" uid="uid://djjlti2wn7hsh" path="res://Scenes/Objects/Thallasic.glb" id="1_iukft"]
 [ext_resource type="PackedScene" uid="uid://uvicjkti4jkx" path="res://Scenes/Objects/Table.glb" id="3_j5yw3"]
 [ext_resource type="PackedScene" uid="uid://6daytslol0xw" path="res://Scenes/Objects/Camera.glb" id="4_kldst"]
 [ext_resource type="Script" uid="uid://bg5oviemm882a" path="res://Scripts/door.gd" id="5_b2bpf"]
@@ -37,10 +36,6 @@ albedo_color = Color(0.801263, 4.23551e-06, 2.88785e-07, 1)
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_gl6un")
-
-[node name="Thallasic" parent="." instance=ExtResource("1_iukft")]
-
-[node name="Tree" parent="Thallasic" instance=ExtResource("3_bf53h")]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://ovs8hom5wfos")
@@ -173,7 +168,7 @@ shape = SubResource("BoxShape3D_fgofq")
 [node name="Lights" type="Node3D" parent="Player2Office"]
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Player2Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -5.09657)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.09825, -3.90664)
 light_energy = 20.0
 light_specular = 0.1
 omni_range = 8.0
@@ -208,28 +203,28 @@ omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D6" type="OmniLight3D" parent="Player2Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -8.5399)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 4.49917, -8.26465)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D7" type="OmniLight3D" parent="Player2Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -8.5399)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36232, 1.51956, -8.26465)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D8" type="OmniLight3D" parent="Player2Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -8.5399)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 4.49917, -8.26465)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D9" type="OmniLight3D" parent="Player2Office/Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -8.5399)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53208, 1.51956, -8.26465)
 light_energy = 0.1
 light_specular = 0.1
 omni_range = 8.0
@@ -260,20 +255,118 @@ cam_label = "CAM 3"
 [node name="Camera3D" parent="CameraSystem/TopFloor/Cam3/CameraRig" index="0"]
 transform = Transform3D(1, -1.63913e-07, 5.96046e-08, -7.45058e-09, 1, 4.76837e-07, 2.98023e-08, 3.72529e-09, 1, 0.0302305, -1.03433, -0.228193)
 
+[node name="Cam4" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.227739, 0.877292, 0.106212, -0.468057, 24.9613, 5.59257, -9.41586)
+cam_label = "CAM 4"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam4/CameraRig" index="0"]
+transform = Transform3D(-0.249197, 0.224955, -0.941964, -0.216152, 0.935193, 0.280521, 0.944023, 0.273512, -0.184423, -7.87257, 2.4469, -14.2005)
+
+[node name="Cam5" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.227739, 0.877292, 0.106212, -0.468057, 41.1667, 5.59257, 17.2209)
+cam_label = "CAM 5"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam5/CameraRig" index="0"]
+transform = Transform3D(-0.950072, -0.0641733, 0.305361, 0.0779149, 0.898832, 0.431311, -0.302147, 0.433569, -0.848955, 1.10264, -0.794606, -0.483826)
+
+[node name="Cam6" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.479943, 0.201487, -0.853849, 0.00361843, 0.973716, 0.227739, 0.877292, 0.106212, -0.468057, 7.67376, 5.59257, -9.32033)
+cam_label = "CAM 6"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam6/CameraRig" index="0"]
+transform = Transform3D(-0.868989, 0.322803, -0.375044, -0.100128, 0.627534, 0.772123, 0.484596, 0.708518, -0.512998, 21.2089, 2.99146, -11.5696)
+
+[node name="Cam7" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.589645, -0.181859, 0.786922, 0.00361844, 0.973716, 0.227739, -0.807654, 0.137132, -0.573489, 40.5442, 6.18846, 20.1896)
+cam_label = "CAM 7"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam7/CameraRig" index="0"]
+transform = Transform3D(0.931165, 0.0832762, -0.354961, -0.0827912, 0.996429, 0.0165835, 0.355074, 0.0139453, 0.934734, -0.856991, -0.70752, -0.824989)
+
+[node name="Cam8" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(0.454751, 0.201227, -0.867588, 0.00361842, 0.973716, 0.227739, 0.890611, -0.106704, 0.442071, 33.9024, 5.87182, 33.0564)
+cam_label = "CAM 8"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam8/CameraRig" index="0"]
+transform = Transform3D(0.886924, 0.105595, -0.449685, -0.104799, 0.994133, 0.0267464, 0.449871, 0.0234039, 0.892786, -0.408398, -0.20032, -0.260528)
+
+[node name="Cam9" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.957258, -0.0624929, 0.282402, 0.00361841, 0.973716, 0.227739, -0.289212, 0.219027, -0.931872, 40.2151, 5.87182, 38.7027)
+cam_label = "CAM 9"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam9/CameraRig" index="0"]
+transform = Transform3D(0.769235, 0.146331, -0.621984, -0.144705, 0.988028, 0.053485, 0.622364, 0.0488613, 0.781201, -1.20659, -0.109398, -0.636597)
+
+[node name="Cam10" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.957258, -0.0624929, 0.282402, 0.00361841, 0.973716, 0.227739, -0.289212, 0.219027, -0.931872, 40.8134, 5.87182, 47.4775)
+cam_label = "CAM 10"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam10/CameraRig" index="0"]
+transform = Transform3D(0.876161, 0.207959, -0.434851, -0.126898, 0.969835, 0.208126, 0.465015, -0.12717, 0.876121, -1.23561, -0.561712, -0.898899)
+
+[node name="Cam11" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(0.689566, 0.162504, -0.705756, 0.00361841, 0.973716, 0.227739, 0.724214, -0.159595, 0.670853, 7.18667, 5.87182, 46.5942)
+cam_label = "CAM 11"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam11/CameraRig" index="0"]
+transform = Transform3D(0.94711, 0.0732701, -0.312433, -0.0728976, 0.997255, 0.0128895, 0.312519, 0.0105674, 0.949852, 0.0185509, -0.0141888, -0.0313587)
+
+[node name="Cam12" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(0.824961, 0.125808, -0.551009, 0.00361838, 0.973716, 0.227739, 0.565178, -0.189869, 0.802823, 25.4883, 5.89398, 36.3877)
+cam_label = "CAM 12"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam12/CameraRig" index="0"]
+transform = Transform3D(0.961818, 0.0624646, -0.266466, -0.0621956, 0.998019, 0.00945704, 0.266528, 0.00747668, 0.963798, 0.0168533, -0.471066, -0.138216)
+
+[node name="Cam13" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(-0.798032, -0.134426, 0.58743, 0.00361841, 0.973716, 0.227739, -0.602604, 0.183868, -0.776571, 23.6922, 5.89398, 28.8704)
+cam_label = "CAM 13"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam13/CameraRig" index="0"]
+transform = Transform3D(0.961818, 0.0624646, -0.266466, -0.0621956, 0.998019, 0.00945704, 0.266528, 0.00747668, 0.963798, 0.0168533, -0.471066, -0.138216)
+
+[node name="Cam14" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(0.558623, -0.19086, 0.807164, 0.00361839, 0.973716, 0.227739, -0.829413, -0.124299, 0.544631, 15.5652, 5.89398, 36.5373)
+cam_label = "CAM 14"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam14/CameraRig" index="0"]
+transform = Transform3D(0.961818, 0.0624646, -0.266466, -0.0621956, 0.998019, 0.00945704, 0.266528, 0.00747668, 0.963798, 0.0168533, -0.471066, -0.138216)
+
+[node name="Cam15" parent="CameraSystem/TopFloor" instance=ExtResource("7_fgofq")]
+transform = Transform3D(0.558623, -0.19086, 0.807164, 0.00361839, 0.973716, 0.227739, -0.829413, -0.124299, 0.544631, 6.55136, 5.89398, 36.5373)
+cam_label = "CAM 15"
+
+[node name="Camera3D" parent="CameraSystem/TopFloor/Cam15/CameraRig" index="0"]
+transform = Transform3D(0.961818, 0.0624646, -0.266466, -0.0621956, 0.998019, 0.00945704, 0.266528, 0.00747668, 0.963798, 0.0168533, -0.471066, -0.138216)
+
 [node name="BottomFloor" type="Node3D" parent="CameraSystem"]
 
-[node name="Cam4" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
+[node name="Cam16" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
 transform = Transform3D(-0.915806, -0.306323, -0.259745, 0.0492067, 0.556286, -0.829533, 0.398597, -0.772472, -0.494377, 7.67376, -12.6872, -9.32033)
-cam_label = "CAM 4"
+cam_label = "CAM 7"
 floor_group = "bottom"
 
-[node name="Cam5" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
+[node name="Cam17" parent="CameraSystem/BottomFloor" instance=ExtResource("7_fgofq")]
 transform = Transform3D(-0.781892, -0.541261, 0.309323, 0.0487887, -0.547782, -0.835197, 0.621501, -0.637942, 0.454714, 16.5444, -12.688, 8.18852)
-cam_label = "CAM 5"
+cam_label = "CAM 8"
 floor_group = "bottom"
+
+[node name="Thallasic" parent="." instance=ExtResource("1_iukft")]
 
 [editable path="CameraSystem/TopFloor/Cam1"]
 [editable path="CameraSystem/TopFloor/Cam2"]
 [editable path="CameraSystem/TopFloor/Cam3"]
-[editable path="CameraSystem/BottomFloor/Cam4"]
-[editable path="CameraSystem/BottomFloor/Cam5"]
+[editable path="CameraSystem/TopFloor/Cam4"]
+[editable path="CameraSystem/TopFloor/Cam5"]
+[editable path="CameraSystem/TopFloor/Cam6"]
+[editable path="CameraSystem/TopFloor/Cam7"]
+[editable path="CameraSystem/TopFloor/Cam8"]
+[editable path="CameraSystem/TopFloor/Cam9"]
+[editable path="CameraSystem/TopFloor/Cam10"]
+[editable path="CameraSystem/TopFloor/Cam11"]
+[editable path="CameraSystem/TopFloor/Cam12"]
+[editable path="CameraSystem/TopFloor/Cam13"]
+[editable path="CameraSystem/TopFloor/Cam14"]
+[editable path="CameraSystem/TopFloor/Cam15"]
+[editable path="CameraSystem/BottomFloor/Cam16"]
+[editable path="CameraSystem/BottomFloor/Cam17"]

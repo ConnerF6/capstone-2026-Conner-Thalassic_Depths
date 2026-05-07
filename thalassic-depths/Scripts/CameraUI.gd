@@ -6,6 +6,10 @@ signal closed
 @onready var bottom_btn: Button = $FloorButtons/BottomFloorButton
 @onready var cam_list: Node = $CameraList
 @onready var feed: TextureRect = $FeedDisplay
+@onready var camera_backdrop: Sprite2D = $CameraBackdrop
+
+const BACKDROP_TOP = preload("res://2DArt/ThalaTop.png")
+const BACKDROP_BOTTOM = preload("res://2DArt/ThalaBottom.png")
 
 var camera_system: Node = null
 var active_camera: Node = null
@@ -44,6 +48,10 @@ func _switch_floor(new_floor: String):
 	current_floor = new_floor
 	top_btn.modulate = Color.WHITE if new_floor == "top" else Color(0.5, 0.5, 0.5)
 	bottom_btn.modulate = Color.WHITE if new_floor == "bottom" else Color(0.5, 0.5, 0.5)
+
+	# Swap backdrop texture
+	camera_backdrop.texture = BACKDROP_TOP if new_floor == "top" else BACKDROP_BOTTOM
+
 	for btn in cam_list.get_children():
 		btn.visible = (btn.floor_group == new_floor)
 	_update_button_indicators()
