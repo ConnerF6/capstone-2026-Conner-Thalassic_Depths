@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://8w6vmviejqmw" path="res://2DArt/CameraOutline (1).png" id="1_sbc1y"]
 [ext_resource type="Texture2D" uid="uid://crcdof66j6q3g" path="res://2DArt/ExitArrow.png" id="2_3xbnt"]
 [ext_resource type="Script" uid="uid://gux6mh1ykdyj" path="res://Scripts/CamButton.gd" id="3_rrmnb"]
-[ext_resource type="Texture2D" uid="uid://dr27su23pgcoc" path="res://2DArt/ThalaTop.png" id="5_qdn4b"]
+[ext_resource type="Texture2D" uid="uid://db06u0mqa2msr" path="res://2DArt/ThalaBottom.png" id="5_qdn4b"]
 
 [node name="CameraUI" type="Control"]
 layout_mode = 3
@@ -29,9 +29,9 @@ mouse_filter = 2
 [node name="TopFloorButton" type="Button" parent="CameraOverlay/FloorButtons"]
 z_index = 1
 layout_mode = 0
-offset_left = 455.0
+offset_left = 442.0
 offset_top = 127.0
-offset_right = 565.0
+offset_right = 552.0
 offset_bottom = 158.0
 text = "Top Floor
 "
@@ -39,9 +39,9 @@ text = "Top Floor
 [node name="BottomFloorButton" type="Button" parent="CameraOverlay/FloorButtons"]
 z_index = 1
 layout_mode = 0
-offset_left = 455.0
+offset_left = 442.0
 offset_top = 164.0
-offset_right = 565.0
+offset_right = 552.0
 offset_bottom = 195.0
 text = "Bottom Floor
 "
@@ -53,6 +53,7 @@ offset_bottom = 40.0
 mouse_filter = 2
 
 [node name="CamBtn1" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 579.0
@@ -75,6 +76,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn2" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 683.0
@@ -98,6 +100,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn3" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 659.0
@@ -121,6 +124,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn4" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 583.0
@@ -144,6 +148,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn5" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 762.0
@@ -167,6 +172,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn6" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 754.0
@@ -190,6 +196,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn7" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 824.0
@@ -213,6 +220,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn8" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 911.0
@@ -236,6 +244,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn9" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 982.0
@@ -259,6 +268,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn10" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 1061.0
@@ -282,6 +292,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn11" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 1004.0
@@ -305,6 +316,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn12" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 923.0
@@ -328,6 +340,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn13" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 899.0
@@ -351,6 +364,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn14" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 922.0
@@ -374,6 +388,7 @@ position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
 [node name="CamBtn15" type="Button" parent="CameraOverlay/CameraList"]
+visible = false
 z_index = 1
 layout_mode = 0
 offset_left = 921.0
@@ -393,6 +408,366 @@ offset_bottom = 32.3333
 text = "Cam 15"
 
 [node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn15"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn16" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 741.0
+offset_top = 277.0
+offset_right = 837.0
+offset_bottom = 341.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 16"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn16"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 16"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn16"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn17" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 683.0
+offset_top = 203.0
+offset_right = 779.0
+offset_bottom = 267.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 17"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn17"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 17"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn17"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn18" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 900.0
+offset_top = 204.0
+offset_right = 996.0
+offset_bottom = 268.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 18"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn18"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 18"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn18"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn19" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 565.0
+offset_top = 210.0
+offset_right = 661.0
+offset_bottom = 274.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 19"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn19"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 19"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn19"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn20" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 983.0
+offset_top = 204.0
+offset_right = 1079.0
+offset_bottom = 268.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 20"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn20"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 20"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn20"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn21" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 1042.0
+offset_top = 163.0
+offset_right = 1138.0
+offset_bottom = 227.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 21"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn21"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 21"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn21"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn22" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 1002.0
+offset_top = 272.0
+offset_right = 1098.0
+offset_bottom = 336.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 22"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn22"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 22"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn22"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn23" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 970.0
+offset_top = 359.0
+offset_right = 1066.0
+offset_bottom = 423.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 23"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn23"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 23"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn23"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn24" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 982.0
+offset_top = 402.0
+offset_right = 1078.0
+offset_bottom = 466.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 24"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn24"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 24"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn24"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn25" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 569.0
+offset_top = 252.0
+offset_right = 665.0
+offset_bottom = 316.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 25"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn25"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 25"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn25"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn26" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 613.0
+offset_top = 360.0
+offset_right = 709.0
+offset_bottom = 424.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 26"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn26"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 26"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn26"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn27" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 601.0
+offset_top = 403.0
+offset_right = 697.0
+offset_bottom = 467.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 27"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn27"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 27"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn27"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn28" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 672.0
+offset_top = 329.0
+offset_right = 768.0
+offset_bottom = 393.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 28"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn28"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 28"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn28"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn29" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 910.0
+offset_top = 328.0
+offset_right = 1006.0
+offset_bottom = 392.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 29"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn29"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 29"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn29"]
+position = Vector2(48, 32)
+texture = ExtResource("1_sbc1y")
+
+[node name="CamBtn30" type="Button" parent="CameraOverlay/CameraList"]
+z_index = 1
+layout_mode = 0
+offset_left = 879.0
+offset_top = 512.0
+offset_right = 975.0
+offset_bottom = 576.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("3_rrmnb")
+cam_label = "CAM 30"
+floor_group = "bottom"
+
+[node name="Label" type="Label" parent="CameraOverlay/CameraList/CamBtn30"]
+layout_mode = 0
+offset_left = 13.3333
+offset_top = 9.33333
+offset_right = 62.3333
+offset_bottom = 32.3333
+text = "Cam 30"
+
+[node name="Sprite2D" type="Sprite2D" parent="CameraOverlay/CameraList/CamBtn30"]
 position = Vector2(48, 32)
 texture = ExtResource("1_sbc1y")
 
