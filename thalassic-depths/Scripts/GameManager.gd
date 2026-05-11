@@ -1,33 +1,23 @@
 extends Node
  
-# ─────────────────────────────────────────────
-#  GameManager.gd
-#  Attach to a Node named "GameManager" in your
-#  Game scene. Add it to the group "game_manager".
-# ─────────────────────────────────────────────
- 
 signal hour_changed(new_hour: int)
 signal night_over(survived: bool)
 signal player_died(player_id: int, killer_name: String)
  
-# ── Night timing ──────────────────────────────
 # 5 real minutes = 6 in-game hours (12 am → 5 am)
 # 50 real seconds per in-game hour
 const NIGHT_DURATION   : float = 300.0   # 5:00 in seconds
 const HOUR_DURATION    : float = 50.0    # seconds per in-game hour
 const HOURS_IN_NIGHT   : int   = 6       # 12 am, 1 am, 2 am, 3 am, 4 am, 5 am
  
-# ── Night state ───────────────────────────────
 var current_night  : int   = 1
 var night_timer    : float = 0.0
 var current_hour   : int   = 0           # 0 = 12 am, 1 = 1 am … 5 = 5 am
 var night_running  : bool  = false
  
-# ── Death tracking ────────────────────────────
 # Peer IDs of players who are still alive
 var alive_players  : Array = []
  
-# ── AI Level schedules ────────────────────────
 # Each entry is [min_level, max_level] per hour index (0–5).
 # A range like [1,2] picks randomly at the start of that hour.
 # Add more entities here as you create them.
@@ -44,14 +34,9 @@ var ai_schedules : Dictionary = {
 var current_ai_levels : Dictionary = {}
  
  
-# ═════════════════════════════════════════════
 func _ready() -> void:
 	add_to_group("game_manager")
  
- 
-# ─────────────────────────────────────────────
-#  Public API
-# ─────────────────────────────────────────────
  
 func start_night(night_num: int, player_ids: Array) -> void:
 	current_night  = night_num
@@ -63,14 +48,25 @@ func start_night(night_num: int, player_ids: Array) -> void:
 	_resolve_ai_levels(0)
 	hour_changed.emit(0)
 	set_process(true)
- 
- 
+
+@rpc("authority", "call_local", "reliable")
+func _sync_night_over(survived: bool) -> void:
+	night_running = false
+	night_over.emit(survived)
+
+func _end_night(survived: bool) -> void:
+	night_running = false
+	set_process(false)
+	_sync_night_over.rpc(survived)
+	night_over.emit(survived)
+	if survived and multiplayer.is_server():
+		await get_tree().create_timer(3.0).timeout
+		NetworkManager.return_to_lobby.rpc()
+
 func get_ai_level(entity_name: String) -> int:
 	return current_ai_levels.get(entity_name, 0)
  
  
-# Called by Sludge (or any entity) via RPC when it kills a player.
-# Only the server should call this.
 @rpc("authority", "call_local", "reliable")
 func notify_player_death(player_id: int, killer_name: String) -> void:
 	if not multiplayer.is_server():
@@ -82,11 +78,6 @@ func notify_player_death(player_id: int, killer_name: String) -> void:
  
 	if alive_players.is_empty():
 		_end_night(false)
- 
- 
-# ─────────────────────────────────────────────
-#  Internal – tick
-# ─────────────────────────────────────────────
  
 func _process(delta: float) -> void:
 	if not night_running:
@@ -121,30 +112,14 @@ func _resolve_ai_levels(hour_index: int) -> void:
 			current_ai_levels[entity] = randi_range(lo, hi) if lo != hi else lo
 		else:
 			current_ai_levels[entity] = 0
- 
- 
-func _end_night(survived: bool) -> void:
-	night_running = false
-	set_process(false)
-	_sync_night_over.rpc(survived)
-	night_over.emit(survived)
- 
- 
-# ─────────────────────────────────────────────
-#  RPCs – keep all peers in sync
-# ─────────────────────────────────────────────
- 
+
+
 @rpc("authority", "call_local", "reliable")
 func _sync_hour(hour: int, ai_levels: Dictionary) -> void:
 	current_hour       = hour
 	current_ai_levels  = ai_levels
 	hour_changed.emit(hour)
  
- 
-@rpc("authority", "call_local", "reliable")
-func _sync_night_over(survived: bool) -> void:
-	night_running = false
-	night_over.emit(survived)
  
  
 @rpc("authority", "call_local", "reliable")

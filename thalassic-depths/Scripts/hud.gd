@@ -70,10 +70,6 @@ func _on_night_over(_survived: bool) -> void:
 	night_running = false
 
 
-# ─────────────────────────────────────────────
-#  Call this from your settings menu when the
-#  player toggles the timer on/off.
-# ─────────────────────────────────────────────
 func apply_timer_setting(enabled: bool) -> void:
 	data.show_timer = enabled
 	data.save_game()

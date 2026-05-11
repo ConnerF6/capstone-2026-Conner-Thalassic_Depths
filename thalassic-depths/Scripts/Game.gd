@@ -1,7 +1,9 @@
 extends Node3D
+
 const PLAYER_SCENE = preload("res://scenes/Player.tscn")
 
 func _ready():
+	NetworkManager.player_disconnected.connect(_on_player_disconnected)  # NEW
 	if multiplayer.is_server():
 		_spawn_player(1)
 		multiplayer.peer_connected.connect(_on_peer_connected)
@@ -17,7 +19,6 @@ func _client_ready():
 	print("Client reported ready: ", id)
 	_spawn_player(id)
 	_spawn_self.rpc_id(id)
-
 	await get_tree().process_frame
 	var gm_nodes = get_tree().get_nodes_in_group("game_manager")
 	if gm_nodes.is_empty():
@@ -40,3 +41,7 @@ func _spawn_player(id: int):
 	add_child(player)
 	player.set_multiplayer_authority(id)
 	print("Spawned player: ", id)
+
+func _on_player_disconnected():
+	NetworkManager.disconnect_game()
+	get_tree().change_scene_to_file("res://Scenes/title_screen.tscn")

@@ -9,6 +9,7 @@ signal joined_lobby(host_username: String, client_username: String)
 signal connection_failed
 signal ready_state_changed(host_ready: bool, client_ready: bool)
 signal countdown_tick(seconds_left: int)
+signal player_disconnected
 
 var peer: ENetMultiplayerPeer
 var room_code: String = ""
@@ -43,10 +44,20 @@ func host_game(username: String) -> String:
 	udp_server.set_broadcast_enabled(true)
 	udp_server.bind(0)
 
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+
 	return room_code
 
 func _on_peer_connected(id: int):
 	_request_username.rpc_id(id)
+
+func _on_peer_disconnected(_id: int):
+	player_disconnected.emit()
+
+@rpc("authority", "call_local", "reliable")
+func return_to_lobby():
+	disconnect_game()
+	get_tree().change_scene_to_file("res://Scenes/title_screen.tscn")
 
 @rpc("authority", "call_remote", "reliable")
 func _request_username():
@@ -75,15 +86,32 @@ func join_game(code: String, username: String):
 	udp_listener.bind(BROADCAST_PORT)
 
 func disconnect_game():
+	if multiplayer.peer_disconnected.is_connected(_on_peer_disconnected):
+		multiplayer.peer_disconnected.disconnect(_on_peer_disconnected)
+	if multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
+	if multiplayer.peer_connected.is_connected(_on_peer_connected):
+		multiplayer.peer_connected.disconnect(_on_peer_connected)
+	if multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.disconnect(_on_connected_to_server)
+	if multiplayer.connection_failed.is_connected(_on_connection_failed):
+		multiplayer.connection_failed.disconnect(_on_connection_failed)
+
 	if peer:
 		peer.close()
 		peer = null
+
+	multiplayer.multiplayer_peer = null
+
 	if udp_server and udp_server.is_bound():
 		udp_server.close()
 	if udp_listener and udp_listener.is_bound():
 		udp_listener.close()
+
 	is_searching = false
-	multiplayer.multiplayer_peer = null
+	host_ready = false
+	client_ready = false
+	countdown_timer = -1.0
 
 func start_game():
 	if multiplayer.is_server():
@@ -127,8 +155,8 @@ func _process(delta):
 		_broadcast_presence(delta)
 	if is_searching:
 		_listen_for_host()
-	# Countdown: only ticks on the host
-	if multiplayer.is_server() and countdown_timer >= 0.0:
+
+	if multiplayer.multiplayer_peer != null and multiplayer.is_server() and countdown_timer >= 0.0:
 		var prev_sec = int(countdown_timer)
 		countdown_timer -= delta
 		var new_sec = int(countdown_timer)
@@ -168,9 +196,13 @@ func _connect_to_host(ip: String):
 	multiplayer.multiplayer_peer = peer
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 func _on_connected_to_server():
 	print("Connected to host!")
+
+func _on_server_disconnected():
+	player_disconnected.emit()
 
 func _on_connection_failed():
 	connection_failed.emit()
