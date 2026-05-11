@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ovs8hom5wfos"]
 
 [ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
-[ext_resource type="Script" uid="uid://ci7au36pn1byb" path="res://Scenes/hud.gd" id="2_gntrk"]
+[ext_resource type="Script" uid="uid://ci7au36pn1byb" path="res://Scripts/hud.gd" id="2_gntrk"]
 [ext_resource type="PackedScene" uid="uid://dk6h4elnlteha" path="res://Scenes/CameraUI.tscn" id="2_kyqiw"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]

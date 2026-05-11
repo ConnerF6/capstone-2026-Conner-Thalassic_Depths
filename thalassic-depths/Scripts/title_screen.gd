@@ -28,6 +28,9 @@ var data = null
 @onready var client_name_label: Label = $MainMenu/ClientNameLabel
 @onready var start_btn: Button = $MainMenu/StartBtn
 
+@onready var countdown_label: Label = $MainMenu/CountdownLabel
+
+
 func _ready():
 	_hide_all()
 	data = load("res://Scripts/DataManager.gd").get_or_create()
@@ -35,7 +38,11 @@ func _ready():
 	NetworkManager.player_joined.connect(_on_player_joined)
 	NetworkManager.joined_lobby.connect(_on_joined_lobby)
 	NetworkManager.connection_failed.connect(_on_connection_failed)
-
+	NetworkManager.ready_state_changed.connect(_on_ready_state_changed)
+	NetworkManager.countdown_tick.connect(_on_countdown_tick)
+	
+	countdown_label.hide()
+	
 	if data.username != "":
 		_show(connection_menu)
 	else:
@@ -80,14 +87,29 @@ func _on_join_back_pressed():
 func _on_player_joined(host_username: String, client_username: String):
 	host_name_label.text = "👑 " + host_username
 	client_name_label.text = client_username
+	start_btn.text = "Start"
+	start_btn.disabled = false
 	start_btn.show()
+	countdown_label.hide()
 	_switch_to(main_menu)
 
 func _on_joined_lobby(host_username: String, client_username: String):
 	host_name_label.text = "👑 " + host_username
 	client_name_label.text = client_username
-	start_btn.hide()
+	start_btn.text = "Start"
+	start_btn.disabled = false 
+	start_btn.show()
+	countdown_label.hide()
 	_switch_to(main_menu)
+
+func _on_ready_state_changed(h_ready: bool, c_ready: bool):
+	var count = (1 if h_ready else 0) + (1 if c_ready else 0)
+	start_btn.text = str(count) + "/2 Ready"
+
+	if multiplayer.is_server() and h_ready:
+		start_btn.disabled = true
+	if not multiplayer.is_server() and c_ready:
+		start_btn.disabled = true
 
 func _on_connection_failed():
 	join_status_label.text = "Could not find room. Try again."
@@ -96,6 +118,18 @@ func _on_connection_failed():
 func _on_start_btn_pressed():
 	if multiplayer.is_server():
 		NetworkManager.start_game()
+		start_btn.disabled = true
+	else:
+		NetworkManager.set_client_ready()
+		start_btn.disabled = true
+
+
+func _on_countdown_tick(seconds_left: int):
+	countdown_label.show()
+	if seconds_left > 0:
+		countdown_label.text = "Starting in " + str(seconds_left) + "s..."
+	else:
+		countdown_label.text = "Starting!"
 
 func _hide_all():
 	username_menu.hide()

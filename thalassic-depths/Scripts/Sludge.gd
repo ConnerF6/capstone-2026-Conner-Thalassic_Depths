@@ -1,16 +1,9 @@
 extends Node
+
  
-# ─────────────────────────────────────────────
-#  Sludge.gd
-#  Attach to the Sludge Node3D in your scene.
-#  Sludge targets Player 1 only.
-#  Server is authoritative; room state is synced
-#  to all peers so P2 can see it on cameras.
-# ─────────────────────────────────────────────
- 
-# ── Room graph ────────────────────────────────
+# Room graph 
 enum Room {
-	SPAWN,      # R25
+	SPAWN, #R25
 	R18,
 	R17,
 	R6,
@@ -35,73 +28,64 @@ const ROOM_GRAPH : Dictionary = {
 const MOVE_INTERVAL      : float = 4.0
 const HALLWAY_INTERVAL   : float = 6.0
 const MOVE_CHANCE_BASE   : float = 0.05
-const FLASH_REPEL_TIME   : float = 4.0   # Seconds of continuous flashing to repel
+const FLASH_REPEL_TIME   : float = 0.5 
  
-# ── State ─────────────────────────────────────
 var current_room   : Room  = Room.SPAWN
 var move_timer     : float = 0.0
 var flash_timer    : float = 0.0
 var is_active      : bool  = false
  
-# ── References ────────────────────────────────
 var game_manager : Node = null
 var player_one   : Node = null
- 
- 
-# ═════════════════════════════════════════════
+
+
 func _ready() -> void:
 	set_process(false)
- 
+
 	if not multiplayer.is_server():
 		return
- 
+
 	await get_tree().process_frame
- 
+
 	var gm_nodes = get_tree().get_nodes_in_group("game_manager")
 	if gm_nodes.is_empty():
 		push_error("Sludge: GameManager not found!")
 		return
 	game_manager = gm_nodes[0]
 	game_manager.hour_changed.connect(_on_hour_changed)
- 
+
 	player_one = get_tree().get_root().find_child("1", true, false)
 	if player_one == null:
 		push_error("Sludge: Player 1 node not found!")
 		return
- 
+
 	print("[Sludge] Initialized. Starting in: ", _room_name(current_room))
 	set_process(true)
- 
- 
-# ─────────────────────────────────────────────
-#  Main tick – server only
-# ─────────────────────────────────────────────
- 
+
+
 func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
- 
+
 	var ai_level : int = game_manager.get_ai_level("Sludge")
- 
+
 	if ai_level <= 0:
 		if is_active:
 			print("[Sludge] Deactivated (AI level 0)")
 		is_active = false
 		return
- 
+
 	if not is_active:
 		print("[Sludge] Activated at AI level: ", ai_level)
 	is_active = true
- 
-	# ── Hallway — attack timer and flash repel live here ──
+
 	if current_room == Room.HALLWAY:
 		var flashing : bool = _player_is_flashing()
- 
+
 		if flashing:
-			# Stall attack timer and accumulate repel timer
 			flash_timer += delta
 			print("[Sludge] Hallway timer stalled — flash timer: %.2fs / %.2fs" % [flash_timer, FLASH_REPEL_TIME])
- 
+
 			if flash_timer >= FLASH_REPEL_TIME:
 				flash_timer = 0.0
 				move_timer  = 0.0
@@ -109,7 +93,6 @@ func _process(delta: float) -> void:
 				_repel_to_spawn()
 			return
 		else:
-			# Flash broken — reset repel timer and let attack tick
 			if flash_timer > 0.0:
 				print("[Sludge] Flash broken after %.2fs (needed %.2fs)" % [flash_timer, FLASH_REPEL_TIME])
 			flash_timer = 0.0
@@ -118,38 +101,34 @@ func _process(delta: float) -> void:
 				move_timer = 0.0
 				_attack()
 		return
- 
-	# ── Normal movement tick ──
+
 	flash_timer = 0.0
 	move_timer += delta
 	if move_timer >= MOVE_INTERVAL:
 		move_timer = 0.0
 		_attempt_move(ai_level)
- 
- 
-# ─────────────────────────────────────────────
-#  Movement
-# ─────────────────────────────────────────────
- 
+
+
+
 func _attempt_move(ai_level: int) -> void:
 	var move_chance : float = clamp(ai_level * MOVE_CHANCE_BASE, 0.0, 1.0)
 	var roll : float = randf()
- 
+
 	print("[Sludge] Movement roll: %.2f vs chance: %.2f (AI level %d)" % [roll, move_chance, ai_level])
- 
+
 	if roll > move_chance:
 		print("[Sludge] Did not move this tick.")
 		return
- 
+
 	var go_forward : bool = randf() < 0.66
 	var direction  : String = "forward" if go_forward else "backward"
- 
+
 	var graph          : Dictionary = ROOM_GRAPH[current_room]
 	var forward_rooms  : Array      = graph["forward"]
 	var backward_rooms : Array      = graph["backward"]
- 
+
 	var next_room : Room
- 
+
 	if go_forward and forward_rooms.size() > 0:
 		next_room = forward_rooms[randi() % forward_rooms.size()]
 	elif not go_forward and backward_rooms.size() > 0:
@@ -161,19 +140,19 @@ func _attempt_move(ai_level: int) -> void:
 	else:
 		print("[Sludge] No valid rooms to move to from: ", _room_name(current_room))
 		return
- 
+
 	print("[Sludge] Moving %s: %s → %s" % [direction, _room_name(current_room), _room_name(next_room)])
 	_move_to(next_room)
- 
- 
+
+
 func _choose_backward(options: Array) -> Room:
 	if current_room == Room.R3:
 		var pick = Room.R6 if randf() < 0.66 else Room.R5
 		print("[Sludge] R3 backward weighted pick: ", _room_name(pick))
 		return pick
 	return options[randi() % options.size()]
- 
- 
+
+
 func _move_to(room: Room) -> void:
 	var prev = current_room
 	current_room = room
@@ -181,95 +160,65 @@ func _move_to(room: Room) -> void:
 	flash_timer  = 0.0
 	_sync_room.rpc(room)
 	print("[Sludge] Arrived in: %s (was: %s)" % [_room_name(room), _room_name(prev)])
- 
+
 	if room == Room.HALLWAY:
 		print("[Sludge] ⚠ Entered HALLWAY — attack timer started (%.1fs)" % HALLWAY_INTERVAL)
- 
- 
+
+
 func _repel_to_spawn() -> void:
 	print("[Sludge] Returning to spawn: %s → SPAWN" % _room_name(current_room))
 	current_room = Room.SPAWN
 	move_timer   = 0.0
 	flash_timer  = 0.0
 	_sync_room.rpc(Room.SPAWN)
- 
- 
-# ─────────────────────────────────────────────
-#  Attack
-# ─────────────────────────────────────────────
- 
+
+
 func _attack() -> void:
 	print("[Sludge] ☠ Attack triggered on Player 1!")
 	_trigger_attack.rpc()
 	game_manager.notify_player_death.rpc(1, "Sludge")
- 
- 
-# ─────────────────────────────────────────────
-#  Flashlight detection
-# ─────────────────────────────────────────────
- 
+
+
 func _player_is_flashing() -> bool:
 	if player_one == null:
 		return false
 	if player_one.get("is_flashing") != null:
 		return player_one.is_flashing
 	return false
- 
- 
-# ─────────────────────────────────────────────
-#  Hour change callback
-# ─────────────────────────────────────────────
- 
+
+
 func _on_hour_changed(hour: int) -> void:
 	var new_level : int = game_manager.get_ai_level("Sludge")
 	print("[Sludge] Hour changed to %d AM — new AI level: %d" % [hour, new_level])
 	move_timer = 0.0
- 
- 
-# ─────────────────────────────────────────────
-#  RPCs
-# ─────────────────────────────────────────────
- 
+
 @rpc("authority", "call_local", "reliable")
 func _sync_room(room: Room) -> void:
 	current_room = room
 	_update_3d_position(room)
- 
- 
+
+
 @rpc("authority", "call_local", "reliable")
 func _trigger_attack() -> void:
 	print("[Sludge] JUMPSCARE — Sludge killed Player 1")
 	# Hook your death screen here:
 	# get_tree().call_group("ui_manager", "show_death_screen", 1, "Sludge")
- 
- 
-# ─────────────────────────────────────────────
-#  3D positioning — fill in pos and rot per room
-#  rot is in degrees (rotation_degrees)
-# ─────────────────────────────────────────────
- 
+
 const ROOM_POSITIONS : Dictionary = {
-	Room.SPAWN:   { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.R18:     { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.R17:     { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.R6:      { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.R5:      { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.R3:      { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.R2:      { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
-	Room.HALLWAY: { "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0) },
+	Room.SPAWN:   { "pos": Vector3(24.5, -9.5, -7.5), "rot": Vector3(0, 44.1, 0) },
+	Room.R18:     { "pos": Vector3(17.35, -5.95, 4.35), "rot": Vector3(0, 20.2, 0) },
+	Room.R17:     { "pos": Vector3(17.25, -4.55, 13.5), "rot": Vector3(3, 180, -25) },
+	Room.R6:      { "pos": Vector3(24.5, 0.28, 14.45), "rot": Vector3(0, -152.0, 0) },
+	Room.R5:      { "pos": Vector3(37.8, 0.28, -4.9), "rot": Vector3(0, -17.7, 0) },
+	Room.R3:      { "pos": Vector3(23.75, 0.28, 5.1), "rot": Vector3(0, -22.1, 0) },
+	Room.R2:      { "pos": Vector3(16.87, 0.28, -3), "rot": Vector3(0, -2, 0) },
+	Room.HALLWAY: { "pos": Vector3(8.53, 0.28, -4.81), "rot": Vector3(0, 0, 0) },
 }
- 
+
 func _update_3d_position(room: Room) -> void:
-	var parent = get_parent()
-	if parent and parent is Node3D:
-		var data = ROOM_POSITIONS[room]
-		parent.global_position  = data["pos"]
-		parent.rotation_degrees = data["rot"]
- 
- 
-# ─────────────────────────────────────────────
-#  Helpers
-# ─────────────────────────────────────────────
- 
+	var data = ROOM_POSITIONS[room]
+	self.global_position  = data["pos"]
+	self.rotation_degrees = data["rot"]
+
 func _room_name(room: Room) -> String:
 	return Room.keys()[room]

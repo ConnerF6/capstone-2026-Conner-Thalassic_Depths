@@ -7,6 +7,8 @@ const BROADCAST_INTERVAL = 1.0
 signal player_joined(host_username: String, client_username: String)
 signal joined_lobby(host_username: String, client_username: String)
 signal connection_failed
+signal ready_state_changed(host_ready: bool, client_ready: bool)
+signal countdown_tick(seconds_left: int)
 
 var peer: ENetMultiplayerPeer
 var room_code: String = ""
@@ -18,6 +20,11 @@ var udp_server: PacketPeerUDP
 var udp_listener: PacketPeerUDP
 var broadcast_timer: float = 0.0
 var is_searching: bool = false
+
+var host_ready: bool = false
+var client_ready: bool = false
+var countdown_timer: float = -1.0
+var COUNTDOWN_DURATION: float = 30.0
 
 func host_game(username: String) -> String:
 	my_username = username
@@ -80,7 +87,35 @@ func disconnect_game():
 
 func start_game():
 	if multiplayer.is_server():
+		host_ready = true
+		if client_ready:
+			countdown_timer = -1.0
+			_sync_ready_state.rpc(host_ready, client_ready, countdown_timer)
+			_load_game.rpc()
+		else:
+			countdown_timer = COUNTDOWN_DURATION
+			_sync_ready_state.rpc(host_ready, client_ready, countdown_timer)
+
+@rpc("authority", "call_local", "reliable") 
+func _sync_ready_state(h_ready: bool, c_ready: bool, timer: float):
+	host_ready = h_ready
+	client_ready = c_ready
+	countdown_timer = timer
+	ready_state_changed.emit(host_ready, client_ready)
+
+func set_client_ready():
+	if not multiplayer.is_server():
+		_notify_client_ready.rpc_id(1)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _notify_client_ready():
+	client_ready = true
+	if host_ready:
+		countdown_timer = -1.0
+		_sync_ready_state.rpc(host_ready, client_ready, countdown_timer)
 		_load_game.rpc()
+	else:
+		_sync_ready_state.rpc(host_ready, client_ready, countdown_timer)
 
 @rpc("authority", "call_local", "reliable")
 func _load_game():
@@ -92,6 +127,20 @@ func _process(delta):
 		_broadcast_presence(delta)
 	if is_searching:
 		_listen_for_host()
+	# Countdown: only ticks on the host
+	if multiplayer.is_server() and countdown_timer >= 0.0:
+		var prev_sec = int(countdown_timer)
+		countdown_timer -= delta
+		var new_sec = int(countdown_timer)
+		if new_sec != prev_sec:
+			_sync_countdown.rpc(new_sec)
+		if countdown_timer <= 0.0:
+			countdown_timer = -1.0
+			_load_game.rpc()
+
+@rpc("authority", "call_local", "reliable")
+func _sync_countdown(seconds_left: int):
+	countdown_tick.emit(seconds_left)
 
 func _broadcast_presence(delta: float):
 	broadcast_timer += delta

@@ -87,6 +87,7 @@ theme_override_font_sizes/font_size = 50
 text = "Join Server"
 
 [node name="HostMenu" type="Control" parent="."]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -166,7 +167,6 @@ theme_override_font_sizes/font_size = 30
 text = " BACK "
 
 [node name="MainMenu" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 8.0
 offset_bottom = 8.0
@@ -197,6 +197,13 @@ offset_right = 174.0
 offset_bottom = 334.0
 theme_override_font_sizes/font_size = 30
 text = "START"
+
+[node name="CountdownLabel" type="Label" parent="MainMenu"]
+layout_mode = 0
+offset_left = 82.0
+offset_top = 343.0
+offset_right = 125.0
+offset_bottom = 366.0
 
 [connection signal="pressed" from="UsernameMenu/UsernameConfirm" to="." method="_on_confirm_pressed"]
 [connection signal="pressed" from="ConnectionMenu/HostBtn" to="." method="_on_host_btn_pressed"]

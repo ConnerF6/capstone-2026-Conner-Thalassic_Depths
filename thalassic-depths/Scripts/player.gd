@@ -63,17 +63,18 @@ func _ready():
 	camera_rig.rotation_degrees.y = CAM_ANGLES[CamState.CENTER]
 	flashlight.visible = false
 
-	var camera_system = get_tree().get_nodes_in_group("camera_system")
-	if camera_system.is_empty():
-		await get_tree().process_frame
-		camera_system = get_tree().get_nodes_in_group("camera_system")
-	
-	print("About to call setup, camera_ui: ", camera_ui)
-	var camera_system_nodes = get_tree().get_nodes_in_group("camera_system")
-	print("Found camera_system nodes: ", camera_system_nodes)
+	var camera_system_nodes: Array = []
+	var attempts = 0
+	while camera_system_nodes.is_empty() and attempts < 10:
+		camera_system_nodes = get_tree().get_nodes_in_group("camera_system")
+		if camera_system_nodes.is_empty():
+			await get_tree().process_frame
+		attempts += 1
+
 	if camera_system_nodes.is_empty():
-		push_error("CameraSystem node not found in group!")
+		push_error("CameraSystem not found after 10 frames!")
 		return
+
 	camera_ui.setup(camera_system_nodes[0], multiplayer.get_unique_id())
 	print("Setup complete")
 	camera_ui.closed.connect(_close_camera_system)
@@ -81,11 +82,10 @@ func _ready():
 
 func _open_camera_system():
 	print("Opening camera system, camera_ui: ", camera_ui)
-	print("camera_system on ui: ", camera_ui.camera_system)
 	
-	#if camera_ui.camera_system == null:
-	#	push_error("CameraOverlay has no camera_system — setup() may not have run yet")
-	#	return
+	if camera_ui.camera_system == null:
+		push_error("CameraOverlay has no camera_system — setup() may not have run yet")
+		return
 	
 	in_camera_system = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

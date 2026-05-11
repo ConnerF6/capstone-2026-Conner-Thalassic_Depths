@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://t1mpmtwrh7b7" path="res://Scripts/camera_system.gd" id="7_2irst"]
 [ext_resource type="PackedScene" uid="uid://cuqw5hmkc6dij" path="res://Scenes/security_camera.tscn" id="7_fgofq"]
 [ext_resource type="PackedScene" uid="uid://cqrm78wyjqydu" path="res://Scenes/Objects/Sludge.glb" id="9_71axn"]
-[ext_resource type="Script" uid="uid://bnltr4syojt4i" path="res://Scenes/Objects/Sludge.gd" id="10_3so38"]
+[ext_resource type="Script" uid="uid://bnltr4syojt4i" path="res://Scripts/Sludge.gd" id="10_3so38"]
 [ext_resource type="PackedScene" uid="uid://dtcnl33pxp4jp" path="res://Scenes/Objects/Tree.glb" id="10_dahhg"]
 [ext_resource type="Script" uid="uid://c144qeesstbsf" path="res://Scripts/GameManager.gd" id="12_3so38"]
 
@@ -513,7 +513,7 @@ transform = Transform3D(0.929233, -0.204809, 0.307541, 0.111812, 0.949162, 0.294
 [node name="Thallasic" parent="." instance=ExtResource("1_iukft")]
 
 [node name="Sludge" parent="." instance=ExtResource("9_71axn")]
-transform = Transform3D(0.718612, 0, 0.695411, 0, 1, 0, -0.695411, 0, 0.718612, 24.3359, -9.56467, -7.5056)
+transform = Transform3D(0.718126, 0, 0.695913, 0, 1, 0, -0.695913, 0, 0.718126, 24.5, -9.5, -7.5)
 script = ExtResource("10_3so38")
 
 [node name="Tree" parent="." instance=ExtResource("10_dahhg")]
