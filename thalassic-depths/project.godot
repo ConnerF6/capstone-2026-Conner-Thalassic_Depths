@@ -22,3 +22,4 @@ NetworkManager="*res://Scripts/NetworkManager.gd"
 
 monitor=""
 camera_system=""
+game_manager=""

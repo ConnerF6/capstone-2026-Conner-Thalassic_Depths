@@ -1,5 +1,4 @@
 extends Node3D
-
 const PLAYER_SCENE = preload("res://scenes/Player.tscn")
 
 func _ready():
@@ -7,11 +6,10 @@ func _ready():
 		_spawn_player(1)
 		multiplayer.peer_connected.connect(_on_peer_connected)
 	else:
-		# Client announces to host that they are ready
 		_client_ready.rpc_id(1)
 
 func _on_peer_connected(_id: int):
-	pass  # Handled by _client_ready now
+	pass
 
 @rpc("any_peer", "call_remote", "reliable")
 func _client_ready():
@@ -19,6 +17,13 @@ func _client_ready():
 	print("Client reported ready: ", id)
 	_spawn_player(id)
 	_spawn_self.rpc_id(id)
+
+	await get_tree().process_frame
+	var gm_nodes = get_tree().get_nodes_in_group("game_manager")
+	if gm_nodes.is_empty():
+		push_error("Game: GameManager not found!")
+		return
+	gm_nodes[0].start_night(1, [1, id])
 
 @rpc("authority", "call_remote", "reliable")
 func _spawn_self():
@@ -33,6 +38,5 @@ func _spawn_player(id: int):
 	var player = PLAYER_SCENE.instantiate()
 	player.name = str(id)
 	add_child(player)
-	# Explicitly assign authority to the correct peer
 	player.set_multiplayer_authority(id)
 	print("Spawned player: ", id)

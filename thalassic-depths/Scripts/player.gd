@@ -24,12 +24,13 @@ var holding_left: bool = false
 var holding_right: bool = false
 var is_player_one: bool = false
 var in_camera_system: bool = false
+var is_flashing: bool = false
 
 @onready var camera_rig: Node3D = $CameraRig
 @onready var flashlight: SpotLight3D = $CameraRig/Flashlight
 @onready var camera: Camera3D = $CameraRig/Camera3D
-@onready var camera_ui_root: Control = $CameraUI
-@onready var camera_ui: Control = $CameraUI/CameraOverlay
+@onready var camera_ui_root: Control = $HUD/CameraUI
+@onready var camera_ui: Control = $HUD/CameraUI/CameraOverlay
 
 func _ready():
 	print("Player node name: ", name)
@@ -82,9 +83,9 @@ func _open_camera_system():
 	print("Opening camera system, camera_ui: ", camera_ui)
 	print("camera_system on ui: ", camera_ui.camera_system)
 	
-	if camera_ui.camera_system == null:
-		push_error("CameraOverlay has no camera_system — setup() may not have run yet")
-		return
+	#if camera_ui.camera_system == null:
+	#	push_error("CameraOverlay has no camera_system — setup() may not have run yet")
+	#	return
 	
 	in_camera_system = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -201,18 +202,16 @@ func _input(event):
 	if event.button_index != MOUSE_BUTTON_LEFT:
 		return
 	if is_player_one and not event.pressed:
-		if current_state == CamState.RIGHT:
-			flashlight.visible = false
+		is_flashing = false
+		flashlight.visible = false
 		return
 	if not event.pressed:
 		return
 	if is_player_one:
 		if current_state == CamState.RIGHT:
 			flashlight.visible = true
-		elif current_state == CamState.CENTER:
-			_try_interact()
-		return
+			is_flashing = true
 	if current_state == CamState.LEFT:
 		_try_interact()
-	elif current_state == CamState.CENTER:
+	elif current_state == CamState.CENTER and in_camera_system == false:
 		_try_interact()

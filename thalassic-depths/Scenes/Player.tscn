@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://ovs8hom5wfos"]
+[gd_scene load_steps=4 format=3 uid="uid://ovs8hom5wfos"]
 
 [ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
+[ext_resource type="Script" uid="uid://ci7au36pn1byb" path="res://Scenes/hud.gd" id="2_gntrk"]
 [ext_resource type="PackedScene" uid="uid://dk6h4elnlteha" path="res://Scenes/CameraUI.tscn" id="2_kyqiw"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
@@ -21,4 +22,31 @@ spot_range = 15.0
 spot_attenuation = 1.5
 spot_angle = 14.5
 
-[node name="CameraUI" parent="." instance=ExtResource("2_kyqiw")]
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_gntrk")
+
+[node name="CameraUI" parent="HUD" instance=ExtResource("2_kyqiw")]
+
+[node name="HourLabel" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 1053.0
+offset_top = 1.0
+offset_right = 1153.0
+offset_bottom = 43.0
+theme_override_font_sizes/font_size = 30
+text = "00 AM"
+horizontal_alignment = 2
+
+[node name="TimerLabel" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 1052.0
+offset_top = 41.0
+offset_right = 1154.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 20
+text = "0:00:00"
+horizontal_alignment = 2
