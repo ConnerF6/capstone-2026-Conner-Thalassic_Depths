@@ -26,7 +26,7 @@ const ROOM_GRAPH : Dictionary = {
  
 # ── Timing ────────────────────────────────────
 const MOVE_INTERVAL      : float = 4.0
-const HALLWAY_INTERVAL   : float = 6.0
+const HALLWAY_INTERVAL   : float = 8.0
 const MOVE_CHANCE_BASE   : float = 0.05
 const FLASH_REPEL_TIME   : float = 0.5 
  
