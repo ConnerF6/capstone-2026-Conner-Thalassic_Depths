@@ -46,6 +46,9 @@ _spawnable_scenes = PackedStringArray("uid://ovs8hom5wfos")
 spawn_path = NodePath("..")
 spawn_limit = 2
 
+[node name="GameManager" type="Node" parent="." groups=["game_manager"]]
+script = ExtResource("12_3so38")
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_gl6un")
 
@@ -517,9 +520,6 @@ transform = Transform3D(0.718126, 0, 0.695913, 0, 1, 0, -0.695913, 0, 0.718126, 
 script = ExtResource("10_3so38")
 
 [node name="Tree" parent="." instance=ExtResource("10_dahhg")]
-
-[node name="GameManager" type="Node" parent="." groups=["game_manager"]]
-script = ExtResource("12_3so38")
 
 [editable path="CameraSystem/TopFloor/Cam1"]
 [editable path="CameraSystem/TopFloor/Cam2"]

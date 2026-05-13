@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://dk6h4elnlteha"]
 
 [ext_resource type="Script" uid="uid://bq42lye348l3u" path="res://Scripts/CameraUI.gd" id="1_3xbnt"]
-[ext_resource type="Texture2D" uid="uid://8w6vmviejqmw" path="res://2DArt/CameraOutline (1).png" id="1_sbc1y"]
-[ext_resource type="Texture2D" uid="uid://crcdof66j6q3g" path="res://2DArt/ExitArrow.png" id="2_3xbnt"]
+[ext_resource type="Texture2D" uid="uid://8w6vmviejqmw" path="res://2DArt/StaticArt/CameraOutline (1).png" id="1_sbc1y"]
+[ext_resource type="Texture2D" uid="uid://crcdof66j6q3g" path="res://2DArt/StaticArt/ExitArrow.png" id="2_3xbnt"]
 [ext_resource type="Script" uid="uid://gux6mh1ykdyj" path="res://Scripts/CamButton.gd" id="3_rrmnb"]
-[ext_resource type="Texture2D" uid="uid://db06u0mqa2msr" path="res://2DArt/ThalaBottom.png" id="5_qdn4b"]
+[ext_resource type="Texture2D" uid="uid://db06u0mqa2msr" path="res://2DArt/StaticArt/ThalaBottom.png" id="5_qdn4b"]
 
 [node name="CameraUI" type="Control"]
 layout_mode = 3

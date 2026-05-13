@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8w6vmviejqmw"
-path="res://.godot/imported/CameraOutline (1).png-59c21aca4daae095c1adf2646ac8acba.ctex"
+uid="uid://dr27su23pgcoc"
+path="res://.godot/imported/ThalaTop.png-6f6223106cace52746159b506b8d5084.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://2DArt/CameraOutline (1).png"
-dest_files=["res://.godot/imported/CameraOutline (1).png-59c21aca4daae095c1adf2646ac8acba.ctex"]
+source_file="res://2DArt/StaticArt/ThalaTop.png"
+dest_files=["res://.godot/imported/ThalaTop.png-6f6223106cace52746159b506b8d5084.ctex"]
 
 [params]
 

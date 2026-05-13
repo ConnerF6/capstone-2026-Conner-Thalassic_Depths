@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr27su23pgcoc"
-path="res://.godot/imported/ThalaTop.png-04f4056126a52fa6498e51b3dda2863f.ctex"
+uid="uid://crcdof66j6q3g"
+path="res://.godot/imported/ExitArrow.png-624093b82f889aa86dd50b19fb089cf8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://2DArt/ThalaTop.png"
-dest_files=["res://.godot/imported/ThalaTop.png-04f4056126a52fa6498e51b3dda2863f.ctex"]
+source_file="res://2DArt/StaticArt/ExitArrow.png"
+dest_files=["res://.godot/imported/ExitArrow.png-624093b82f889aa86dd50b19fb089cf8.ctex"]
 
 [params]
 

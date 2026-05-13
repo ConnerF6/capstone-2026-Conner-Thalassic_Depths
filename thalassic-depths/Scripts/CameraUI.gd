@@ -8,8 +8,8 @@ signal closed
 @onready var feed: TextureRect = $FeedDisplay
 @onready var camera_backdrop: Sprite2D = $CameraBackdrop
 
-const BACKDROP_TOP = preload("res://2DArt/ThalaTop.png")
-const BACKDROP_BOTTOM = preload("res://2DArt/ThalaBottom.png")
+const BACKDROP_TOP = preload("res://2DArt/StaticArt/ThalaTop.png")
+const BACKDROP_BOTTOM = preload("res://2DArt/StaticArt/ThalaBottom.png")
 
 var camera_system: Node = null
 var active_camera: Node = null

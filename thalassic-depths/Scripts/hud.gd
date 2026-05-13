@@ -1,14 +1,5 @@
 extends Control
 
-# ─────────────────────────────────────────────
-#  NightClockUI.gd
-#  Attach to a Control node in your HUD scene.
-#  Expects two child Labels:
-#    $HourLabel   – shows "12 AM", "1 AM", etc.
-#    $TimerLabel  – shows elapsed MM:SS:cs, toggled by settings
-#
-#  This node is shown to both players.
-# ─────────────────────────────────────────────
 
 @onready var hour_label:  Label = $HourLabel
 @onready var timer_label: Label = $TimerLabel
@@ -24,7 +15,6 @@ const HOUR_NAMES := ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM"]
 func _ready() -> void:
 	data = load("res://Scripts/DataManager.gd").get_or_create()
 
-	# Apply timer visibility from settings
 	timer_label.visible = data.show_timer
 
 	await get_tree().create_timer(0.5).timeout
@@ -38,7 +28,6 @@ func _ready() -> void:
 	game_manager.hour_changed.connect(_on_hour_changed)
 	game_manager.night_over.connect(_on_night_over)
 
-	# Set initial display
 	_on_hour_changed(0)
 	night_running = true
 

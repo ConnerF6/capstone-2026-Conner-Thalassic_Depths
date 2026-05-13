@@ -1,9 +1,7 @@
 extends Node
 
- 
-# Room graph 
 enum Room {
-	SPAWN, #R25
+	SPAWN,
 	R18,
 	R17,
 	R6,
@@ -12,7 +10,7 @@ enum Room {
 	R2,
 	HALLWAY,
 }
- 
+
 const ROOM_GRAPH : Dictionary = {
 	Room.SPAWN:   { "forward": [Room.R18],          "backward": []                  },
 	Room.R18:     { "forward": [Room.R17],           "backward": [Room.SPAWN]        },
@@ -23,18 +21,17 @@ const ROOM_GRAPH : Dictionary = {
 	Room.R2:      { "forward": [Room.HALLWAY],       "backward": [Room.R3]           },
 	Room.HALLWAY: { "forward": [],                   "backward": [Room.R2]           },
 }
- 
-# ── Timing ────────────────────────────────────
+
 const MOVE_INTERVAL      : float = 4.0
 const HALLWAY_INTERVAL   : float = 8.0
 const MOVE_CHANCE_BASE   : float = 0.05
-const FLASH_REPEL_TIME   : float = 0.5 
- 
+const FLASH_REPEL_TIME   : float = 0.5
+
 var current_room   : Room  = Room.SPAWN
 var move_timer     : float = 0.0
 var flash_timer    : float = 0.0
 var is_active      : bool  = false
- 
+
 var game_manager : Node = null
 var player_one   : Node = null
 
@@ -109,7 +106,6 @@ func _process(delta: float) -> void:
 		_attempt_move(ai_level)
 
 
-
 func _attempt_move(ai_level: int) -> void:
 	var move_chance : float = clamp(ai_level * MOVE_CHANCE_BASE, 0.0, 1.0)
 	var roll : float = randf()
@@ -174,9 +170,38 @@ func _repel_to_spawn() -> void:
 
 
 func _attack() -> void:
-	print("[Sludge] ☠ Attack triggered on Player 1!")
-	_trigger_attack.rpc()
-	game_manager.notify_player_death.rpc(1, "Sludge")
+	print("[Sludge] ☠ Attack triggered!")
+	_play_jumpscare.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_jumpscare() -> void:
+	var player = get_tree().get_root().find_child("1", true, false)
+	if player == null:
+		push_error("Sludge: Player node not found for jumpscare!")
+		game_manager.trigger_attack("Sludge", false)
+		return
+
+	var jumpscare = player.find_child("JumpscareSprite", true, false)
+	if jumpscare == null:
+		push_error("Sludge: JumpscareSprite not found!")
+		game_manager.trigger_attack("Sludge", false)
+		return
+
+	var frames = load("res://2DArt/AnimatedArt/SludgeJumpscare.tres")
+	if frames == null:
+		push_error("Sludge: SpriteFrames resource not found!")
+		game_manager.trigger_attack("Sludge", false)
+		return
+
+	jumpscare.sprite_frames = frames
+	jumpscare.visible = true
+	jumpscare.play("jumpscare")
+	await jumpscare.animation_finished
+	jumpscare.visible = false
+
+	game_manager.trigger_attack("Sludge", false)
+	game_manager.trigger_attack("Sludge", false)
 
 
 func _player_is_flashing() -> bool:
@@ -192,27 +217,22 @@ func _on_hour_changed(hour: int) -> void:
 	print("[Sludge] Hour changed to %d AM — new AI level: %d" % [hour, new_level])
 	move_timer = 0.0
 
+
 @rpc("authority", "call_local", "reliable")
 func _sync_room(room: Room) -> void:
 	current_room = room
 	_update_3d_position(room)
 
 
-@rpc("authority", "call_local", "reliable")
-func _trigger_attack() -> void:
-	print("[Sludge] JUMPSCARE — Sludge killed Player 1")
-	# Hook your death screen here:
-	# get_tree().call_group("ui_manager", "show_death_screen", 1, "Sludge")
-
 const ROOM_POSITIONS : Dictionary = {
-	Room.SPAWN:   { "pos": Vector3(24.5, -9.5, -7.5), "rot": Vector3(0, 44.1, 0) },
-	Room.R18:     { "pos": Vector3(17.35, -5.95, 4.35), "rot": Vector3(0, 20.2, 0) },
-	Room.R17:     { "pos": Vector3(17.25, -4.55, 13.5), "rot": Vector3(3, 180, -25) },
-	Room.R6:      { "pos": Vector3(24.5, 0.28, 14.45), "rot": Vector3(0, -152.0, 0) },
-	Room.R5:      { "pos": Vector3(37.8, 0.28, -4.9), "rot": Vector3(0, -17.7, 0) },
-	Room.R3:      { "pos": Vector3(23.75, 0.28, 5.1), "rot": Vector3(0, -22.1, 0) },
-	Room.R2:      { "pos": Vector3(16.87, 0.28, -3), "rot": Vector3(0, -2, 0) },
-	Room.HALLWAY: { "pos": Vector3(8.53, 0.28, -4.81), "rot": Vector3(0, 0, 0) },
+	Room.SPAWN:   { "pos": Vector3(24.5, -9.5, -7.5),    "rot": Vector3(0, 44.1, 0)    },
+	Room.R18:     { "pos": Vector3(17.35, -5.95, 4.35),  "rot": Vector3(0, 20.2, 0)    },
+	Room.R17:     { "pos": Vector3(17.25, -4.55, 13.5),  "rot": Vector3(3, 180, -25)   },
+	Room.R6:      { "pos": Vector3(24.5, 0.28, 14.45),   "rot": Vector3(0, -152.0, 0)  },
+	Room.R5:      { "pos": Vector3(37.8, 0.28, -4.9),    "rot": Vector3(0, -17.7, 0)   },
+	Room.R3:      { "pos": Vector3(23.75, 0.28, 5.1),    "rot": Vector3(0, -22.1, 0)   },
+	Room.R2:      { "pos": Vector3(16.87, 0.28, -3),     "rot": Vector3(0, -2, 0)      },
+	Room.HALLWAY: { "pos": Vector3(8.53, 0.28, -4.81),   "rot": Vector3(0, 0, 0)       },
 }
 
 func _update_3d_position(room: Room) -> void:
@@ -220,5 +240,15 @@ func _update_3d_position(room: Room) -> void:
 	self.global_position  = data["pos"]
 	self.rotation_degrees = data["rot"]
 
+
 func _room_name(room: Room) -> String:
-	return Room.keys()[room]
+	match room:
+		Room.SPAWN:   return "SPAWN"
+		Room.R18:     return "R18"
+		Room.R17:     return "R17"
+		Room.R6:      return "R6"
+		Room.R5:      return "R5"
+		Room.R3:      return "R3"
+		Room.R2:      return "R2"
+		Room.HALLWAY: return "HALLWAY"
+	return "UNKNOWN"

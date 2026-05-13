@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crcdof66j6q3g"
-path="res://.godot/imported/ExitArrow.png-4a58bfef4896d15c78d16035867a7e21.ctex"
+uid="uid://db06u0mqa2msr"
+path="res://.godot/imported/ThalaBottom.png-9d39540276409bff6f1fe71a71ccc6a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://2DArt/ExitArrow.png"
-dest_files=["res://.godot/imported/ExitArrow.png-4a58bfef4896d15c78d16035867a7e21.ctex"]
+source_file="res://2DArt/StaticArt/ThalaBottom.png"
+dest_files=["res://.godot/imported/ThalaBottom.png-9d39540276409bff6f1fe71a71ccc6a9.ctex"]
 
 [params]
 
