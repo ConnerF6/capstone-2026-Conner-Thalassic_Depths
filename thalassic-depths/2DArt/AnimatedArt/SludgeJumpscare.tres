@@ -222,7 +222,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_urpk4")
 }],
-"loop": true,
-"name": &"default",
+"loop": false,
+"name": &"jumpscare",
 "speed": 5.0
 }]

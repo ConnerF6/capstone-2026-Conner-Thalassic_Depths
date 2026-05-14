@@ -172,14 +172,13 @@ func _attack() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_jumpscare() -> void:
-	var player = get_parent().get_node_or_null("1")
-	if player == null:
+	if player_one == null:
 		push_error("Sludge: Player node not found for jumpscare!")
 		if multiplayer.is_server():
 			game_manager.notify_player_death(1, "Sludge")
 		return
 
-	var jumpscare = player.find_child("JumpscareSprite", true, false)
+	var jumpscare = player_one.find_child("JumpscareSprite", true, false)
 	if jumpscare == null:
 		push_error("Sludge: JumpscareSprite not found!")
 		if multiplayer.is_server():
