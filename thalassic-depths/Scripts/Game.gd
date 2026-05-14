@@ -37,7 +37,7 @@ func _spawn_player(id: int):
 		print("Already have node for: ", id)
 		return
 	var player = PLAYER_SCENE.instantiate()
-	player.name = str(id)
+	player.name = "1" if id == 1 else "2"
 	add_child(player)
 	player.set_multiplayer_authority(id)
 	print("Spawned player: ", id)

@@ -44,14 +44,10 @@ func _ready() -> void:
 
 	await get_tree().process_frame
 
-	var gm_nodes = get_tree().get_nodes_in_group("game_manager")
-	if gm_nodes.is_empty():
-		push_error("Sludge: GameManager not found!")
-		return
-	game_manager = gm_nodes[0]
+	game_manager = get_parent().get_node("GameManager")
 	game_manager.hour_changed.connect(_on_hour_changed)
 
-	player_one = get_tree().get_root().find_child("1", true, false)
+	player_one = get_parent().get_node_or_null("1")
 	if player_one == null:
 		push_error("Sludge: Player 1 node not found!")
 		return
@@ -176,22 +172,25 @@ func _attack() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_jumpscare() -> void:
-	var player = get_tree().get_root().find_child("1", true, false)
+	var player = get_parent().get_node_or_null("1")
 	if player == null:
 		push_error("Sludge: Player node not found for jumpscare!")
-		game_manager.trigger_attack("Sludge", false)
+		if multiplayer.is_server():
+			game_manager.notify_player_death(1, "Sludge")
 		return
 
 	var jumpscare = player.find_child("JumpscareSprite", true, false)
 	if jumpscare == null:
 		push_error("Sludge: JumpscareSprite not found!")
-		game_manager.trigger_attack("Sludge", false)
+		if multiplayer.is_server():
+			game_manager.notify_player_death(1, "Sludge")
 		return
 
 	var frames = load("res://2DArt/AnimatedArt/SludgeJumpscare.tres")
 	if frames == null:
 		push_error("Sludge: SpriteFrames resource not found!")
-		game_manager.trigger_attack("Sludge", false)
+		if multiplayer.is_server():
+			game_manager.notify_player_death(1, "Sludge")
 		return
 
 	jumpscare.sprite_frames = frames
@@ -200,11 +199,14 @@ func _play_jumpscare() -> void:
 	await jumpscare.animation_finished
 	jumpscare.visible = false
 
-	game_manager.trigger_attack("Sludge", false)
-	game_manager.trigger_attack("Sludge", false)
+	# Only the server registers the death, after animation completes
+	if multiplayer.is_server():
+		game_manager.notify_player_death(1, "Sludge")
 
 
 func _player_is_flashing() -> bool:
+	if not is_instance_valid(player_one):
+		player_one = get_parent().get_node_or_null("1")
 	if player_one == null:
 		return false
 	if player_one.get("is_flashing") != null:
