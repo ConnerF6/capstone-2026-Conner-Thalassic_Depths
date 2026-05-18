@@ -40,11 +40,14 @@ func _ready():
 	set_process(false)
 	camera_ui_root.hide()
 
-	if name != str(multiplayer.get_unique_id()):
+	if multiplayer.is_server() and name == "2":
+		print("Not my player, skipping: ", name)
+		return
+	if not multiplayer.is_server() and name == "1":
 		print("Not my player, skipping: ", name)
 		return
 
-	is_player_one = (multiplayer.get_unique_id() == 1)
+	is_player_one = (name == "1")
 
 	print("This is my player, setting up camera: ", name)
 	$CameraRig/Camera3D.current = true
@@ -53,7 +56,7 @@ func _ready():
 
 	await get_tree().process_frame
 
-	if multiplayer.get_unique_id() == 1:
+	if name == "1":
 		global_position = SPAWN_P1
 		rotation_degrees.y = 0.0
 	else:
@@ -75,23 +78,23 @@ func _ready():
 		push_error("CameraSystem not found after 10 frames!")
 		return
 
-	camera_ui.setup(camera_system_nodes[0], multiplayer.get_unique_id())
+	camera_ui.setup(camera_system_nodes[0], name.to_int())
 	print("Setup complete")
 	camera_ui.closed.connect(_close_camera_system)
 
 
 func _open_camera_system():
 	print("Opening camera system, camera_ui: ", camera_ui)
-	
+
 	if camera_ui.camera_system == null:
 		push_error("CameraOverlay has no camera_system — setup() may not have run yet")
 		return
-	
+
 	in_camera_system = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	camera_ui_root.show()
 	camera.current = false
-	
+
 	var cams = camera_ui.camera_system.get_cameras("top")
 	if cams.size() > 0:
 		camera_ui._select_camera(cams[0])

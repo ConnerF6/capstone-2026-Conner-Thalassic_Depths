@@ -29,8 +29,6 @@ func _setup_viewport():
 	viewport.world_3d = get_tree().root.get_viewport().world_3d
 	viewport_container.add_child(viewport)
 
-	# Reparent the actual camera into the SubViewport
-	# This preserves all its settings, attributes, and effects
 	source_cam.reparent(viewport)
 
 func get_texture() -> ViewportTexture:
