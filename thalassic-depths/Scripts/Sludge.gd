@@ -22,15 +22,17 @@ const ROOM_GRAPH : Dictionary = {
 	Room.HALLWAY: { "forward": [],                   "backward": [Room.R2]           },
 }
 
-const MOVE_INTERVAL      : float = 4.0
-const HALLWAY_INTERVAL   : float = 8.0
-const MOVE_CHANCE_BASE   : float = 0.05
-const FLASH_REPEL_TIME   : float = 0.5
+const MOVE_INTERVAL        : float = 4.0
+const HALLWAY_INTERVAL     : float = 8.0
+const HALLWAY_INTERVAL_LONG: float = 16.0
+const MOVE_CHANCE_BASE     : float = 0.05
+const FLASH_REPEL_TIME     : float = 0.5
 
-var current_room   : Room  = Room.SPAWN
-var move_timer     : float = 0.0
-var flash_timer    : float = 0.0
-var is_active      : bool  = false
+var current_room      : Room  = Room.SPAWN
+var move_timer        : float = 0.0
+var flash_timer       : float = 0.0
+var is_active         : bool  = false
+var first_attack_done : bool  = false  # tracks if first attack attempt has passed
 
 var game_manager : Node = null
 var player_one   : Node = null
@@ -78,10 +80,10 @@ func _process(delta: float) -> void:
 		if flashing:
 			flash_timer += delta
 			print("[Sludge] Hallway timer stalled — flash timer: %.2fs / %.2fs" % [flash_timer, FLASH_REPEL_TIME])
-
 			if flash_timer >= FLASH_REPEL_TIME:
-				flash_timer = 0.0
-				move_timer  = 0.0
+				flash_timer       = 0.0
+				move_timer        = 0.0
+				first_attack_done = false
 				print("[Sludge] Flashed long enough — repelled back to spawn!")
 				_repel_to_spawn()
 			return
@@ -90,12 +92,30 @@ func _process(delta: float) -> void:
 				print("[Sludge] Flash broken after %.2fs (needed %.2fs)" % [flash_timer, FLASH_REPEL_TIME])
 			flash_timer = 0.0
 			move_timer += delta
-			if move_timer >= HALLWAY_INTERVAL:
-				move_timer = 0.0
-				_attack()
+
+			if not first_attack_done:
+				# First attack window — only fires if cameras are up
+				if move_timer >= HALLWAY_INTERVAL:
+					if _player_camera_is_up():
+						print("[Sludge] First attack window — cameras up, attacking!")
+						move_timer        = 0.0
+						first_attack_done = true
+						_attack()
+					else:
+						print("[Sludge] First attack window — cameras down, waiting for long timer.")
+						move_timer        = 0.0
+						first_attack_done = true
+			else:
+				# Second attack window — fires regardless
+				if move_timer >= HALLWAY_INTERVAL_LONG:
+					print("[Sludge] Second attack window — attacking regardless of cameras!")
+					move_timer        = 0.0
+					first_attack_done = false
+					_attack()
 		return
 
-	flash_timer = 0.0
+	flash_timer       = 0.0
+	first_attack_done = false
 	move_timer += delta
 	if move_timer >= MOVE_INTERVAL:
 		move_timer = 0.0
@@ -147,9 +167,10 @@ func _choose_backward(options: Array) -> Room:
 
 func _move_to(room: Room) -> void:
 	var prev = current_room
-	current_room = room
-	move_timer   = 0.0
-	flash_timer  = 0.0
+	current_room      = room
+	move_timer        = 0.0
+	flash_timer       = 0.0
+	first_attack_done = false
 	_sync_room.rpc(room)
 	print("[Sludge] Arrived in: %s (was: %s)" % [_room_name(room), _room_name(prev)])
 
@@ -159,9 +180,10 @@ func _move_to(room: Room) -> void:
 
 func _repel_to_spawn() -> void:
 	print("[Sludge] Returning to spawn: %s → SPAWN" % _room_name(current_room))
-	current_room = Room.SPAWN
-	move_timer   = 0.0
-	flash_timer  = 0.0
+	current_room      = Room.SPAWN
+	move_timer        = 0.0
+	flash_timer       = 0.0
+	first_attack_done = false
 	_sync_room.rpc(Room.SPAWN)
 
 
@@ -172,11 +194,17 @@ func _attack() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_jumpscare() -> void:
+	if not is_instance_valid(player_one):
+		player_one = get_parent().get_node_or_null("1")
 	if player_one == null:
 		push_error("Sludge: Player node not found for jumpscare!")
 		if multiplayer.is_server():
 			game_manager.notify_player_death(1, "Sludge")
 		return
+
+	# Lock player and close cameras before jumpscare
+	if player_one.has_method("begin_jumpscare"):
+		player_one.begin_jumpscare()
 
 	var jumpscare = player_one.find_child("JumpscareSprite", true, false)
 	if jumpscare == null:
@@ -198,7 +226,6 @@ func _play_jumpscare() -> void:
 	await jumpscare.animation_finished
 	jumpscare.visible = false
 
-	# Only the server registers the death, after animation completes
 	if multiplayer.is_server():
 		game_manager.notify_player_death(1, "Sludge")
 
@@ -210,6 +237,16 @@ func _player_is_flashing() -> bool:
 		return false
 	if player_one.get("is_flashing") != null:
 		return player_one.is_flashing
+	return false
+
+
+func _player_camera_is_up() -> bool:
+	if not is_instance_valid(player_one):
+		player_one = get_parent().get_node_or_null("1")
+	if player_one == null:
+		return false
+	if player_one.get("in_camera_system") != null:
+		return player_one.in_camera_system
 	return false
 
 

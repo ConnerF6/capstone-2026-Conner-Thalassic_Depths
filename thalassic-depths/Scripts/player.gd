@@ -218,3 +218,9 @@ func _input(event):
 		_try_interact()
 	elif current_state == CamState.CENTER and in_camera_system == false:
 		_try_interact()
+
+func begin_jumpscare():
+	if in_camera_system:
+		_close_camera_system()
+	set_process(false)
+	set_process_input(false)
