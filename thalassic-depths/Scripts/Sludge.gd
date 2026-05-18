@@ -24,7 +24,7 @@ const ROOM_GRAPH : Dictionary = {
 
 const MOVE_INTERVAL        : float = 4.0
 const HALLWAY_INTERVAL     : float = 8.0
-const HALLWAY_INTERVAL_LONG: float = 16.0
+const HALLWAY_INTERVAL_LONG: float = 12.0
 const MOVE_CHANCE_BASE     : float = 0.05
 const FLASH_REPEL_TIME     : float = 0.5
 
@@ -94,7 +94,6 @@ func _process(delta: float) -> void:
 			move_timer += delta
 
 			if not first_attack_done:
-				# First attack window — only fires if cameras are up
 				if move_timer >= HALLWAY_INTERVAL:
 					if _player_camera_is_up():
 						print("[Sludge] First attack window — cameras up, attacking!")
@@ -106,7 +105,6 @@ func _process(delta: float) -> void:
 						move_timer        = 0.0
 						first_attack_done = true
 			else:
-				# Second attack window — fires regardless
 				if move_timer >= HALLWAY_INTERVAL_LONG:
 					print("[Sludge] Second attack window — attacking regardless of cameras!")
 					move_timer        = 0.0
@@ -132,7 +130,7 @@ func _attempt_move(ai_level: int) -> void:
 		print("[Sludge] Did not move this tick.")
 		return
 
-	var go_forward : bool = randf() < 0.66
+	var go_forward : bool = randf() < 0.75
 	var direction  : String = "forward" if go_forward else "backward"
 
 	var graph          : Dictionary = ROOM_GRAPH[current_room]
