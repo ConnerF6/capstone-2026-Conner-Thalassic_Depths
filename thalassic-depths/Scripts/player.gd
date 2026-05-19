@@ -233,10 +233,11 @@ func show_death_screen(killer_name: String) -> void:
 	set_process(false)
 	set_process_input(false)
 
-	var sprite_path := "res://2DArt/StaticArt/Death_%s.png" % killer_name
+	var sprite_path := "res://2DArt/StaticArt/DeathScreen%s.png" % killer_name
 	var tex = load(sprite_path)
 	if tex:
-		death_screen.set_death_texture(tex)
+		var DeathSprite = death_screen.find_child("DeathScreenSprite")
+		DeathSprite.texture = tex
 	else:
 		push_error("Player: No death art found at: %s" % sprite_path)
 
@@ -250,6 +251,7 @@ func begin_spectate(target_id: int) -> void:
 	if target_player == null:
 		push_error("Player: Spectate target not found: %s" % target_id)
 		return
+	print("PlayerSpectateFound")
 
 	# Hide death screen now that we're spectating
 	death_screen.hide()
