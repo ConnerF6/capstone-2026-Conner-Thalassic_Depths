@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ovs8hom5wfos"]
+[gd_scene load_steps=6 format=3 uid="uid://ovs8hom5wfos"]
 
 [ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://ci7au36pn1byb" path="res://Scripts/hud.gd" id="2_gntrk"]
 [ext_resource type="PackedScene" uid="uid://dk6h4elnlteha" path="res://Scenes/CameraUI.tscn" id="2_kyqiw"]
 [ext_resource type="SpriteFrames" uid="uid://dr6jwxbssvm0o" path="res://2DArt/AnimatedArt/SludgeJumpscare.tres" id="4_dewec"]
+[ext_resource type="Texture2D" uid="uid://djvf6ip53h2ql" path="res://2DArt/StaticArt/DeathScreenSludge.png" id="5_5ixxa"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_rpqav")
@@ -31,8 +32,10 @@ offset_bottom = 40.0
 script = ExtResource("2_gntrk")
 
 [node name="CameraUI" parent="HUD" instance=ExtResource("2_kyqiw")]
+visible = false
 
 [node name="HourLabel" type="Label" parent="HUD"]
+visible = false
 layout_mode = 0
 offset_left = 1053.0
 offset_top = 1.0
@@ -43,6 +46,7 @@ text = "00 AM"
 horizontal_alignment = 2
 
 [node name="TimerLabel" type="Label" parent="HUD"]
+visible = false
 layout_mode = 0
 offset_left = 1052.0
 offset_top = 41.0
@@ -60,3 +64,48 @@ sprite_frames = ExtResource("4_dewec")
 animation = &"jumpscare"
 frame = 30
 frame_progress = 1.0
+
+[node name="DeathScreen" type="Control" parent="HUD"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DeathScreenSprite" type="Sprite2D" parent="HUD/DeathScreen"]
+position = Vector2(576, 324)
+scale = Vector2(1.09091, 0.920455)
+texture = ExtResource("5_5ixxa")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HUD/DeathScreen"]
+layout_mode = 0
+offset_left = 592.0
+offset_top = 6.0
+offset_right = 864.0
+offset_bottom = 81.0
+scale = Vector2(1.33038, 0.8)
+theme_override_font_sizes/normal_font_size = 50
+text = "You Died..."
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="HUD/DeathScreen"]
+layout_mode = 0
+offset_left = 597.0
+offset_top = 59.0
+offset_right = 1130.0
+offset_bottom = 625.0
+theme_override_font_sizes/normal_font_size = 25
+text = "To Sludge
+
+Ensure that you check the hallway.
+ 
+Flash Sludge with the flashlight to repel them back.
+
+
+
+
+
+
+
+
+
+Click to Continue..."
+fit_content = true

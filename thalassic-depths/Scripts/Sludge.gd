@@ -23,16 +23,18 @@ const ROOM_GRAPH : Dictionary = {
 }
 
 const MOVE_INTERVAL        : float = 4.0
-const HALLWAY_INTERVAL     : float = 8.0
-const HALLWAY_INTERVAL_LONG: float = 12.0
+const HALLWAY_INTERVAL     : float = 8.0   # Time before attack window opens
+const CAM_KILL_WINDOW      : float = 20.0  # How long Sludge watches for cams
+const HARD_KILL_TIMER      : float = 20.0  # Fallback hard kill if player never opens cams
 const MOVE_CHANCE_BASE     : float = 0.05
 const FLASH_REPEL_TIME     : float = 0.5
 
-var current_room      : Room  = Room.SPAWN
-var move_timer        : float = 0.0
-var flash_timer       : float = 0.0
-var is_active         : bool  = false
-var first_attack_done : bool  = false  # tracks if first attack attempt has passed
+var current_room        : Room  = Room.SPAWN
+var move_timer          : float = 0.0
+var flash_timer         : float = 0.0
+var in_attack_window    : bool  = false
+var attack_window_timer : float = 0.0
+var is_active           : bool  = false
 
 var game_manager : Node = null
 var player_one   : Node = null
@@ -81,9 +83,10 @@ func _process(delta: float) -> void:
 			flash_timer += delta
 			print("[Sludge] Hallway timer stalled — flash timer: %.2fs / %.2fs" % [flash_timer, FLASH_REPEL_TIME])
 			if flash_timer >= FLASH_REPEL_TIME:
-				flash_timer       = 0.0
-				move_timer        = 0.0
-				first_attack_done = false
+				flash_timer         = 0.0
+				move_timer          = 0.0
+				in_attack_window    = false
+				attack_window_timer = 0.0
 				print("[Sludge] Flashed long enough — repelled back to spawn!")
 				_repel_to_spawn()
 			return
@@ -91,29 +94,39 @@ func _process(delta: float) -> void:
 			if flash_timer > 0.0:
 				print("[Sludge] Flash broken after %.2fs (needed %.2fs)" % [flash_timer, FLASH_REPEL_TIME])
 			flash_timer = 0.0
-			move_timer += delta
 
-			if not first_attack_done:
-				if move_timer >= HALLWAY_INTERVAL:
-					if _player_camera_is_up():
-						print("[Sludge] First attack window — cameras up, attacking!")
-						move_timer        = 0.0
-						first_attack_done = true
-						_attack()
-					else:
-						print("[Sludge] First attack window — cameras down, waiting for long timer.")
-						move_timer        = 0.0
-						first_attack_done = true
-			else:
-				if move_timer >= HALLWAY_INTERVAL_LONG:
-					print("[Sludge] Second attack window — attacking regardless of cameras!")
-					move_timer        = 0.0
-					first_attack_done = false
-					_attack()
+		# --- Phase 1: initial wait before the attack window opens ---
+		if not in_attack_window:
+			move_timer += delta
+			if move_timer >= HALLWAY_INTERVAL:
+				move_timer          = 0.0
+				in_attack_window    = true
+				attack_window_timer = 0.0
+				print("[Sludge] Attack window opened — watching for cams!")
+			return
+
+		# --- Phase 2: attack window — kill instantly if cams are up, hard kill after timeout ---
+		attack_window_timer += delta
+		print("[Sludge] Attack window: %.2fs / %.2fs — cams up: %s" % [attack_window_timer, HARD_KILL_TIMER, _player_camera_is_up()])
+
+		if _player_camera_is_up():
+			print("[Sludge] Player opened cams during attack window — attacking!")
+			in_attack_window    = false
+			attack_window_timer = 0.0
+			_attack()
+			return
+
+		if attack_window_timer >= HARD_KILL_TIMER:
+			print("[Sludge] Hard kill timer expired — attacking regardless!")
+			in_attack_window    = false
+			attack_window_timer = 0.0
+			_attack()
 		return
 
-	flash_timer       = 0.0
-	first_attack_done = false
+	# Not in hallway — reset attack state and tick movement
+	flash_timer         = 0.0
+	in_attack_window    = false
+	attack_window_timer = 0.0
 	move_timer += delta
 	if move_timer >= MOVE_INTERVAL:
 		move_timer = 0.0
@@ -165,28 +178,34 @@ func _choose_backward(options: Array) -> Room:
 
 func _move_to(room: Room) -> void:
 	var prev = current_room
-	current_room      = room
-	move_timer        = 0.0
-	flash_timer       = 0.0
-	first_attack_done = false
+	current_room        = room
+	move_timer          = 0.0
+	flash_timer         = 0.0
+	in_attack_window    = false
+	attack_window_timer = 0.0
 	_sync_room.rpc(room)
 	print("[Sludge] Arrived in: %s (was: %s)" % [_room_name(room), _room_name(prev)])
 
 	if room == Room.HALLWAY:
-		print("[Sludge] ⚠ Entered HALLWAY — attack timer started (%.1fs)" % HALLWAY_INTERVAL)
+		print("[Sludge] ⚠ Entered HALLWAY — initial wait: %.1fs, then watching cams for %.1fs" % [HALLWAY_INTERVAL, HARD_KILL_TIMER])
 
 
 func _repel_to_spawn() -> void:
 	print("[Sludge] Returning to spawn: %s → SPAWN" % _room_name(current_room))
-	current_room      = Room.SPAWN
-	move_timer        = 0.0
-	flash_timer       = 0.0
-	first_attack_done = false
+	current_room        = Room.SPAWN
+	move_timer          = 0.0
+	flash_timer         = 0.0
+	in_attack_window    = false
+	attack_window_timer = 0.0
 	_sync_room.rpc(Room.SPAWN)
 
 
 func _attack() -> void:
 	print("[Sludge] ☠ Attack triggered!")
+	if not game_manager.is_player_alive(1):
+		print("[Sludge] Player 1 is already dead — attack cancelled, returning to spawn.")
+		_repel_to_spawn()
+		return
 	_play_jumpscare.rpc()
 
 
@@ -200,7 +219,9 @@ func _play_jumpscare() -> void:
 			game_manager.notify_player_death(1, "Sludge")
 		return
 
-	# Lock player and close cameras before jumpscare
+	if player_one.is_dead:
+		return
+
 	if player_one.has_method("begin_jumpscare"):
 		player_one.begin_jumpscare()
 
@@ -270,6 +291,7 @@ const ROOM_POSITIONS : Dictionary = {
 	Room.R2:      { "pos": Vector3(16.87, 0.28, -3),     "rot": Vector3(0, -2, 0)      },
 	Room.HALLWAY: { "pos": Vector3(8.53, 0.28, -4.81),   "rot": Vector3(0, 0, 0)       },
 }
+
 
 func _update_3d_position(room: Room) -> void:
 	var data = ROOM_POSITIONS[room]

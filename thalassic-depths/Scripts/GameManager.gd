@@ -4,32 +4,25 @@ signal hour_changed(new_hour: int)
 signal night_over(survived: bool)
 signal player_died(player_id: int, killer_name: String)
 
-# 5 real minutes = 6 in-game hours (12 am → 5 am)
-# 50 real seconds per in-game hour
-const NIGHT_DURATION   : float = 300.0   # 5:00 in seconds
-const HOUR_DURATION    : float = 50.0    # seconds per in-game hour
-const HOURS_IN_NIGHT   : int   = 6       # 12 am, 1 am, 2 am, 3 am, 4 am, 5 am
+const NIGHT_DURATION   : float = 300.0
+const HOUR_DURATION    : float = 50.0
+const HOURS_IN_NIGHT   : int   = 6
 
 var current_night  : int   = 1
 var night_timer    : float = 0.0
 var current_hour   : int   = 0
 var night_running  : bool  = false
 
-# peer_id -> bool (true = alive, false = dead)
 var alive_players  : Dictionary = {}
 
-# Each entry is [min_level, max_level] per hour index (0–5).
-# A range like [1,2] picks randomly at the start of that hour.
-# Add more entities here as you create them.
 var ai_schedules : Dictionary = {
 	"Sludge": {
 		1: [[0,0],[0,0],[1,2],[2,2],[2,3],[3,3]],
-		10: [[10,10], [10,10],[10,10],[10,10],[10,10],[10,10]] #debug
+		10: [[10,10],[10,10],[10,10],[10,10],[10,10],[10,10]]
 	}
 }
 
 var current_ai_levels : Dictionary = {}
-var _death_screens_done : int = 0
 
 
 func _ready() -> void:
@@ -37,11 +30,10 @@ func _ready() -> void:
 
 
 func start_night(night_num: int, player_ids: Array) -> void:
-	current_night = night_num + 9 #temp for debug
+	current_night = night_num + 9
 	night_timer   = 0.0
 	current_hour  = 0
 	night_running = true
-	_death_screens_done = 0
 	alive_players.clear()
 	for id in player_ids:
 		alive_players[id] = true
@@ -55,41 +47,8 @@ func get_ai_level(entity_name: String) -> int:
 	return current_ai_levels.get(entity_name, 0)
 
 
-func trigger_attack(killer_name: String, targets_both: bool) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if targets_both:
-		var targets := alive_players.keys().filter(
-			func(id): return alive_players[id]
-		)
-		for id in targets:
-			_show_death_screen.rpc_id(id, killer_name)
-	else:
-		_show_death_screen.rpc_id(1, killer_name)
-
-
-@rpc("authority", "call_local", "reliable")
-func notify_player_death(player_id: int, killer_name: String) -> void:
-	if not multiplayer.is_server():
-		return
-	if not alive_players.has(player_id):
-		return
-	if not alive_players[player_id]:
-		return
-
-	alive_players[player_id] = false
-	player_died.emit(player_id, killer_name)
-	_broadcast_death.rpc(player_id, killer_name)
-
-	var any_alive := false
-	for id in alive_players:
-		if alive_players[id]:
-			any_alive = true
-			break
-
-	if not any_alive:
-		_end_night(false)
+func is_player_alive(player_id: int) -> bool:
+	return alive_players.get(player_id, false)
 
 
 func _process(delta: float) -> void:
@@ -123,6 +82,74 @@ func _resolve_ai_levels(hour_index: int) -> void:
 			current_ai_levels[entity] = 0
 
 
+func notify_player_death(player_id: int, killer_name: String) -> void:
+	if not multiplayer.is_server():
+		return
+	if not alive_players.has(player_id):
+		return
+	if not alive_players[player_id]:
+		return
+
+	alive_players[player_id] = false
+	player_died.emit(player_id, killer_name)
+	_broadcast_death.rpc(player_id, killer_name)
+
+	var survivor_id : int = -1
+	for id in alive_players:
+		if alive_players[id]:
+			survivor_id = id
+			break
+
+	if survivor_id == -1:
+		# Both dead — stop night immediately
+		night_running = false
+		set_process(false)
+		# Last dead player gets death screen then results
+		_show_death_screen_then_black.rpc_id(player_id, killer_name)
+		# First dead player gets all-dead black screen
+		for id in alive_players:
+			if id != player_id:
+				_show_all_dead_black.rpc_id(id)
+	else:
+		# One survivor — dead player gets death screen then spectates
+		_show_death_screen_then_spectate.rpc_id(player_id, killer_name, survivor_id)
+
+
+# rpc_id sends to a specific peer; the peer ID is consumed by rpc_id itself,
+# so the method signature only declares the remaining arguments.
+@rpc("authority", "call_local", "reliable")
+func _show_death_screen_then_spectate(killer_name: String, spectate_target_id: int) -> void:
+	var my_id := multiplayer.get_unique_id()
+	var player_node = get_parent().get_node_or_null(str(my_id))
+	if player_node and player_node.has_method("show_death_screen"):
+		player_node.show_death_screen(killer_name)
+
+	await get_tree().create_timer(3.0).timeout
+
+	if player_node and player_node.has_method("begin_spectate"):
+		player_node.begin_spectate(spectate_target_id)
+
+
+@rpc("authority", "call_local", "reliable")
+func _show_death_screen_then_black(killer_name: String) -> void:
+	var my_id := multiplayer.get_unique_id()
+	var player_node = get_parent().get_node_or_null(str(my_id))
+	if player_node and player_node.has_method("show_death_screen"):
+		player_node.show_death_screen(killer_name)
+
+	await get_tree().create_timer(3.0).timeout
+
+	_go_to_result_scene.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _show_all_dead_black() -> void:
+	var my_id := multiplayer.get_unique_id()
+	var death_screen = get_parent().get_node_or_null("%s/HUD/DeathScreen" % my_id)
+	if death_screen and death_screen.has_method("show_all_dead"):
+		death_screen.show_all_dead()
+
+
 func _end_night(survived: bool) -> void:
 	night_running = false
 	set_process(false)
@@ -133,32 +160,6 @@ func _end_night(survived: bool) -> void:
 
 	_sync_night_over.rpc(survived, outcomes)
 	night_over.emit(survived)
-
-
-func report_death_screen_done() -> void:
-	if not multiplayer.is_server():
-		_rpc_report_done.rpc_id(1)
-		return
-	_death_screens_done += 1
-	var dead_count := 0
-	for id in alive_players:
-		if not alive_players[id]:
-			dead_count += 1
-	if _death_screens_done >= dead_count:
-		_go_to_result_scene.rpc()
-
-
-@rpc("any_peer", "call_local", "reliable")
-func _rpc_report_done() -> void:
-	if multiplayer.is_server():
-		report_death_screen_done()
-
-
-@rpc("authority", "call_local", "reliable")
-func _show_death_screen(killer_name: String) -> void:
-	print("[GameManager] Show death screen — killed by: %s" % killer_name)
-	await get_tree().create_timer(3.0).timeout
-	report_death_screen_done()
 
 
 @rpc("authority", "call_local", "reliable")
@@ -174,9 +175,6 @@ func _sync_night_over(survived: bool, outcomes: Dictionary) -> void:
 	night_over.emit(survived)
 	GameData.night_result["survived_night"]  = survived
 	GameData.night_result["player_outcomes"] = outcomes
-
-	if survived:
-		_go_to_result_scene.rpc()
 
 
 @rpc("authority", "call_local", "reliable")
