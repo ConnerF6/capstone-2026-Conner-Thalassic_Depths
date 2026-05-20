@@ -23,9 +23,8 @@ const ROOM_GRAPH : Dictionary = {
 }
 
 const MOVE_INTERVAL        : float = 4.0
-const HALLWAY_INTERVAL     : float = 8.0   # Time before attack window opens
-const CAM_KILL_WINDOW      : float = 20.0  # How long Sludge watches for cams
-const HARD_KILL_TIMER      : float = 20.0  # Fallback hard kill if player never opens cams
+const HALLWAY_INTERVAL     : float = 6.0   # Time before attack window opens
+const HARD_KILL_TIMER      : float = 8.0  # Fallback hard kill if player never opens cams
 const MOVE_CHANCE_BASE     : float = 0.05
 const FLASH_REPEL_TIME     : float = 0.5
 
@@ -110,14 +109,14 @@ func _process(delta: float) -> void:
 		print("[Sludge] Attack window: %.2fs / %.2fs — cams up: %s" % [attack_window_timer, HARD_KILL_TIMER, _player_camera_is_up()])
 
 		if _player_camera_is_up():
-			print("[Sludge] Player opened cams during attack window — attacking!")
+			print("[Sludge] Player opened cams — attacking!")
 			in_attack_window    = false
 			attack_window_timer = 0.0
 			_attack()
 			return
 
 		if attack_window_timer >= HARD_KILL_TIMER:
-			print("[Sludge] Hard kill timer expired — attacking regardless!")
+			print("[Sludge] Hard kill timer expired — player never opened cams, attacking!")
 			in_attack_window    = false
 			attack_window_timer = 0.0
 			_attack()

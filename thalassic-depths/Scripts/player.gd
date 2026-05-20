@@ -23,11 +23,13 @@ var is_player_one: bool = false
 var in_camera_system: bool = false
 var is_flashing: bool = false
 var is_dead: bool = false
-var spectating_target_id: int = -1
+var is_spectating: bool = false
+var spectate_target: Node = null
 
 @onready var camera_rig: Node3D = $CameraRig
 @onready var flashlight: SpotLight3D = $CameraRig/Flashlight
 @onready var camera: Camera3D = $CameraRig/Camera3D
+@onready var spectate_camera: Camera3D = $CameraRig/SpectateCamera3D
 @onready var camera_ui_root: Control = $HUD/CameraUI
 @onready var camera_ui: Control = $HUD/CameraUI/CameraOverlay
 @onready var death_screen: Control = $HUD/DeathScreen
@@ -38,6 +40,7 @@ func _ready():
 	print("My peer ID: ", multiplayer.get_unique_id())
 
 	$CameraRig/Camera3D.current = false
+	spectate_camera.current = false
 	set_process(false)
 	camera_ui_root.hide()
 	death_screen.hide()
@@ -94,13 +97,20 @@ func _open_camera_system():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	camera_ui_root.show()
 	camera.current = false
+	spectate_camera.current = false
 
-	var cams = camera_ui.camera_system.get_cameras("top")
-	if cams.size() > 0:
-		camera_ui._select_camera(cams[0])
+	if camera_ui.last_camera != null:
+		camera_ui._select_camera(camera_ui.last_camera)
+	else:
+		var cams = camera_ui.camera_system.get_cameras("top")
+		if cams.size() > 0:
+			camera_ui._select_camera(cams[0])
 
 
 func _close_camera_system():
+	if is_spectating:
+		return
+
 	in_camera_system = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 	camera_ui_root.hide()
@@ -129,10 +139,6 @@ func _try_interact():
 			parent.activate()
 		elif result.collider.is_in_group("monitor"):
 			_open_camera_system()
-
-
-func _process(delta):
-	_handle_camera(delta)
 
 
 func _handle_camera(delta: float):
@@ -206,7 +212,7 @@ func _tween_to(new_state: CamState):
 
 
 func _input(event):
-	if in_camera_system:
+	if in_camera_system or is_spectating:
 		return
 	if not (event is InputEventMouseButton):
 		return
@@ -244,36 +250,42 @@ func show_death_screen(killer_name: String) -> void:
 	death_screen.show()
 
 
+@rpc("any_peer", "call_local", "reliable")
 func begin_spectate(target_id: int) -> void:
-	spectating_target_id = target_id
-
-	var target_player = get_parent().get_node_or_null(str(target_id))
-	if target_player == null:
-		push_error("Player: Spectate target not found: %s" % target_id)
-		return
-	print("PlayerSpectateFound")
-
-	# Hide death screen now that we're spectating
 	death_screen.hide()
-
-	# Disable our own camera
-	camera.current = false
-
-	# Enable target's camera on our peer
-	var target_camera : Camera3D = target_player.get_node_or_null("CameraRig/Camera3D")
-	if target_camera:
-		target_camera.current = true
-	else:
-		push_error("Player: Could not find Camera3D on target player %s" % target_id)
-
-	# Mirror target's camera UI if they're currently in it
-	var target_ui_root = target_player.get_node_or_null("HUD/CameraUI")
-	if target_ui_root and target_player.in_camera_system:
-		camera_ui_root.show()
-	else:
-		camera_ui_root.hide()
-
+	is_spectating = true
+	
 	print("[Player %s] Now spectating Player %s" % [name, target_id])
+
+	if camera_ui.closed.is_connected(_close_camera_system):
+		camera_ui.closed.disconnect(_close_camera_system)
+
+	var target_node_name := "1" if target_id == 1 else "2"
+	spectate_target = get_parent().get_node_or_null(target_node_name)
+	if spectate_target == null:
+		push_error("[Player %s] Spectate: could not find target node '%s'" % [name, target_node_name])
+		return
+
+	# 1. Shut off loop processing cleanly so it doesn't fight the cameras
+	set_process(false)
+
+	# 2. Turn off your local cameras completely
+	camera.current = false
+	spectate_camera.current = false
+
+	# 3. Target the living player's camera rig directly
+	var living_player_camera = spectate_target.get_node_or_null("CameraRig/Camera3D")
+	if living_player_camera:
+		living_player_camera.current = true
+		print("[Player %s] Successfully switched to Player %s's camera view." % [name, target_id])
+	else:
+		push_error("[Player %s] Found target node, but CameraRig/Camera3D is missing!" % name)
+
+
+func _process(delta):
+	# Loop process is now reserved exclusively for living gameplay edge-panning
+	if not is_spectating:
+		_handle_camera(delta)
 
 
 func begin_jumpscare() -> void:

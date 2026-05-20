@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://ovs8hom5wfos"]
+[gd_scene load_steps=7 format=3 uid="uid://ovs8hom5wfos"]
 
 [ext_resource type="Script" uid="uid://dn7qrhsjjvsvi" path="res://Scripts/player.gd" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://ci7au36pn1byb" path="res://Scripts/hud.gd" id="2_gntrk"]
@@ -6,8 +6,19 @@
 [ext_resource type="SpriteFrames" uid="uid://dr6jwxbssvm0o" path="res://2DArt/AnimatedArt/SludgeJumpscare.tres" id="4_dewec"]
 [ext_resource type="Texture2D" uid="uid://djvf6ip53h2ql" path="res://2DArt/StaticArt/DeathScreenSludge.png" id="5_5ixxa"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5ixxa"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("CameraRig:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="CharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_rpqav")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_5ixxa")
 
 [node name="CameraRig" type="Node3D" parent="."]
 
@@ -23,6 +34,9 @@ shadow_enabled = true
 spot_range = 15.0
 spot_attenuation = 1.5
 spot_angle = 14.5
+
+[node name="SpectateCamera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.83124, -5.13246)
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
