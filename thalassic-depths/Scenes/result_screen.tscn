@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://716s3olage2r"]
+
+[ext_resource type="Script" uid="uid://bfberr20de36j" path="res://Scripts/result_screen.gd" id="1_qtxv5"]
+
+[node name="ResultScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qtxv5")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.30808, 0.315397, 0.359508, 1)
+
+[node name="VerdictLabel" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 50
+text = "BLAH"
+
+[node name="NightLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 67.0
+offset_right = 45.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 30
+text = "Night Blah"
+
+[node name="OutcomesContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 130.0
+offset_right = 40.0
+offset_bottom = 170.0
+
+[node name="LobbyButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 882.0
+offset_top = 558.0
+offset_right = 1123.0
+offset_bottom = 608.0
+theme_override_font_sizes/font_size = 30
+text = "Return to Lobby"
